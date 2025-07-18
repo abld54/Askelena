@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Page non trouvée - AskElena{% endblock %}
+{% block description %}La page que vous recherchez n'existe pas ou a été déplacée.{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-mocha-50 to-gold-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto text-center">
+            <!-- 404 Illustration -->
+            <div class="mb-8">
+                <div class="text-8xl font-bold text-mocha-200 mb-4">404</div>
+                <div class="w-32 h-32 mx-auto bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="text-4xl font-bold text-mocha-900 mb-6 font-playfair">
+                Page non trouvée
+            </h1>
+            
+            <p class="text-xl text-mocha-700 mb-8 leading-relaxed">
+                Désolé, la page que vous recherchez n'existe pas ou a été déplacée. 
+                Retournez à l'accueil pour découvrir nos services premium.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{{ url_for('index') }}" 
+                   class="bg-gradient-to-r from-mocha-600 to-gold-600 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    Retour à l'accueil
+                </a>
+                <a href="{{ url_for('contact') }}" 
+                   class="border-2 border-mocha-600 text-mocha-600 px-8 py-4 rounded-lg font-semibold hover:bg-mocha-600 hover:text-white transition-all duration-300">
+                    Nous contacter
+                </a>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="mt-12 pt-8 border-t border-mocha-200">
+                <h3 class="text-lg font-semibold text-mocha-900 mb-4">Liens utiles</h3>
+                <div class="flex flex-wrap justify-center gap-6 text-mocha-600">
+                    <a href="{{ url_for('index') }}#services" class="hover:text-mocha-900 transition-colors">Nos services</a>
+                    <a href="{{ url_for('index') }}#simulateur" class="hover:text-mocha-900 transition-colors">Simulateur LMNP</a>
+                    <a href="{{ url_for('blog') }}" class="hover:text-mocha-900 transition-colors">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="hover:text-mocha-900 transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

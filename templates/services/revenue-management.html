@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block title %}Revenue Management - Optimisation Tarifaire{% endblock %}
+{% block description %}Maximisez vos revenus locatifs avec notre expertise en revenue management. Tarification dynamique et stratégies d'optimisation.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-mocha-50 to-gold-50 py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-mocha-900 mb-6 font-playfair">
+                Revenue Management
+                <span class="block text-gold-600">Intelligent</span>
+            </h1>
+            <p class="text-xl text-mocha-700 mb-8 leading-relaxed">
+                Optimisez vos revenus avec notre expertise en tarification dynamique et analyse prédictive. 
+                Augmentez votre rentabilité de 30% en moyenne.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#audit" class="bg-gradient-to-r from-mocha-600 to-gold-600 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    Audit gratuit
+                </a>
+                <a href="#resultats" class="border-2 border-mocha-600 text-mocha-600 px-8 py-4 rounded-lg font-semibold hover:bg-mocha-600 hover:text-white transition-all duration-300">
+                    Voir les résultats
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Metrics -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2">+32%</div>
+                    <div class="text-mocha-700">Revenus moyens</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2">87%</div>
+                    <div class="text-mocha-700">Taux d'occupation</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2">4.8★</div>
+                    <div class="text-mocha-700">Note moyenne</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2">24h</div>
+                    <div class="text-mocha-700">Temps de réponse</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Overview -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Notre Expertise Revenue Management
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tarification Dynamique -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Tarification Dynamique</h3>
+                    <p class="text-mocha-700 mb-4">Ajustement automatique des prix selon la demande, événements et saisonnalité.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Algorithmes prédictifs avancés</li>
+                        <li>• Analyse concurrentielle temps réel</li>
+                        <li>• Optimisation par segment</li>
+                        <li>• Tarifs événementiels</li>
+                    </ul>
+                </div>
+
+                <!-- Analyse Prédictive -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Analyse Prédictive</h3>
+                    <p class="text-mocha-700 mb-4">Anticipation des tendances et optimisation des stratégies de pricing.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Prévisions de demande</li>
+                        <li>• Modélisation comportementale</li>
+                        <li>• Optimisation saisonnière</li>
+                        <li>• Recommandations IA</li>
+                    </ul>
+                </div>
+
+                <!-- Gestion Multi-Plateformes -->
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Multi-Plateformes</h3>
+                    <p class="text-mocha-700 mb-4">Synchronisation et optimisation sur toutes les plateformes de réservation.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Airbnb, Booking, Expedia</li>
+                        <li>• Synchronisation calendriers</li>
+                        <li>• Gestion centralisée</li>
+                        <li>• Évitement surbooking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance Dashboard -->
+<section id="resultats" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Dashboard Performance en Temps Réel
+            </h2>
+            
+            <div class="bg-gradient-to-br from-gray-50 to-mocha-50 rounded-2xl p-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- RevPAR -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-mocha-900">RevPAR</h4>
+                            <span class="text-green-600 text-sm font-medium">+15%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-mocha-900 mb-2">€127</div>
+                        <div class="text-sm text-mocha-600">vs €110 mois dernier</div>
+                    </div>
+                    
+                    <!-- ADR -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-mocha-900">ADR</h4>
+                            <span class="text-green-600 text-sm font-medium">+8%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-mocha-900 mb-2">€145</div>
+                        <div class="text-sm text-mocha-600">Prix moyen nuitée</div>
+                    </div>
+                    
+                    <!-- Occupation -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-mocha-900">Occupation</h4>
+                            <span class="text-green-600 text-sm font-medium">+5%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-mocha-900 mb-2">87%</div>
+                        <div class="text-sm text-mocha-600">Taux d'occupation</div>
+                    </div>
+                    
+                    <!-- Revenus -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-mocha-900">Revenus</h4>
+                            <span class="text-green-600 text-sm font-medium">+22%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-mocha-900 mb-2">€3,840</div>
+                        <div class="text-sm text-mocha-600">Ce mois</div>
+                    </div>
+                </div>
+                
+                <!-- Chart Placeholder -->
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <h4 class="font-semibold text-mocha-900 mb-4">Évolution des Revenus (12 mois)</h4>
+                    <div class="h-64 bg-gradient-to-r from-mocha-100 to-gold-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center text-mocha-600">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <p>Graphique interactif des performances</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Strategies Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Nos Stratégies Gagnantes
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Stratégie 1 -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-3">Pricing Événementiel</h3>
+                            <p class="text-mocha-700 mb-4">Optimisation automatique lors d'événements majeurs (salons, concerts, matchs).</p>
+                            <ul class="text-sm text-mocha-600 space-y-2">
+                                <li>• Détection automatique des événements</li>
+                                <li>• Ajustement tarifaire prédictif</li>
+                                <li>• Maximisation des revenus peak</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stratégie 2 -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-3">Segmentation Clientèle</h3>
+                            <p class="text-mocha-700 mb-4">Tarification adaptée selon le profil et comportement des voyageurs.</p>
+                            <ul class="text-sm text-mocha-600 space-y-2">
+                                <li>• Business vs Leisure</li>
+                                <li>• Durée de séjour optimisée</li>
+                                <li>• Offres personnalisées</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stratégie 3 -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-3">Optimisation Last-Minute</h3>
+                            <p class="text-mocha-700 mb-4">Stratégies spécifiques pour maximiser l'occupation de dernière minute.</p>
+                            <ul class="text-sm text-mocha-600 space-y-2">
+                                <li>• Réductions automatiques progressives</li>
+                                <li>• Packages attractifs</li>
+                                <li>• Promotion ciblée</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stratégie 4 -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-3">Réactivité Concurrentielle</h3>
+                            <p class="text-mocha-700 mb-4">Surveillance et ajustement en temps réel face à la concurrence.</p>
+                            <ul class="text-sm text-mocha-600 space-y-2">
+                                <li>• Monitoring concurrentiel 24/7</li>
+                                <li>• Ajustements automatiques</li>
+                                <li>• Positionnement optimal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section id="audit" class="py-16 bg-gradient-to-br from-mocha-900 to-gold-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-6 font-playfair">
+                Audit Gratuit de Votre Performance
+            </h2>
+            <p class="text-xl mb-8 opacity-90">
+                Découvrez votre potentiel d'optimisation avec notre analyse complète gratuite.
+            </p>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-8 max-w-2xl mx-auto">
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Plateforme principale</label>
+                            <select aria-label="Plateforme principale" class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-gold-400">
+                                <option value="">Sélectionnez</option>
+                                <option value="airbnb">Airbnb</option>
+                                <option value="booking">Booking.com</option>
+                                <option value="expedia">Expedia</option>
+                                <option value="multiple">Plusieurs</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Revenus mensuels actuels</label>
+                            <input type="number" placeholder="Ex: 2500" 
+                                   class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-gold-400">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">URL de votre annonce</label>
+                        <input type="url" placeholder="https://airbnb.com/rooms/..." 
+                               class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-gold-400">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-gold-500 to-gold-600 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        Recevoir mon audit gratuit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Form submission
+    const form = document.querySelector('#audit form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add form submission logic here
+            alert('Merci ! Votre audit personnalisé sera prêt sous 24h.');
+        });
+    }
+    
+    // Animate metrics on scroll
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const metrics = entry.target.querySelectorAll('[data-metric]');
+                metrics.forEach(metric => {
+                    animateMetric(metric);
+                });
+            }
+        });
+    }, observerOptions);
+    
+    const metricsSection = document.querySelector('.grid.md\\:grid-cols-4');
+    if (metricsSection) {
+        observer.observe(metricsSection);
+    }
+    
+    function animateMetric(element) {
+        const finalValue = element.textContent;
+        const isPercentage = finalValue.includes('%');
+        const isPrice = finalValue.includes('€');
+        const numericValue = parseInt(finalValue.replace(/[^\d]/g, ''));
+        
+        let currentValue = 0;
+        const increment = numericValue / 50;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= numericValue) {
+                currentValue = numericValue;
+                clearInterval(timer);
+            }
+            
+            let displayValue = Math.floor(currentValue);
+            if (isPercentage) displayValue += '%';
+            if (isPrice) displayValue = '€' + displayValue;
+            if (finalValue.includes('★')) displayValue = (currentValue / 10).toFixed(1) + '★';
+            if (finalValue.includes('h')) displayValue += 'h';
+            
+            element.textContent = displayValue;
+        }, 20);
+    }
+});
+</script>
+{% endblock %}

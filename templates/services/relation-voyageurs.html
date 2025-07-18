@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}Relation Voyageurs - Accueil Premium{% endblock %}
+{% block description %}Service d'accueil haut de gamme avec check-in numérique et accompagnement humain personnalisé pour vos voyageurs.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-mocha-50 to-gold-50 py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-mocha-900 mb-6 font-playfair">
+                Relation Voyageurs
+                <span class="block text-gold-600">Excellence</span>
+            </h1>
+            <p class="text-xl text-mocha-700 mb-8 leading-relaxed">
+                Offrez une expérience d'accueil inoubliable avec notre service premium alliant 
+                technologie avancée et accompagnement humain personnalisé.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#demo" class="bg-gradient-to-r from-mocha-600 to-gold-600 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    Voir la démo
+                </a>
+                <a href="#temoignages" class="border-2 border-mocha-600 text-mocha-600 px-8 py-4 rounded-lg font-semibold hover:bg-mocha-600 hover:text-white transition-all duration-300">
+                    Témoignages clients
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Features -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Check-in Numérique</h3>
+                    <p class="text-mocha-700">Application mobile intuitive pour un accueil autonome 24h/24.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Accueil Humain</h3>
+                    <p class="text-mocha-700">Équipe dédiée disponible pour un service personnalisé premium.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Expérience Sur-Mesure</h3>
+                    <p class="text-mocha-700">Recommandations personnalisées et services à la carte.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Digital Check-in Process -->
+<section id="demo" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Check-in Numérique Révolutionnaire
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Process Steps -->
+                <div class="space-y-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">1</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-2">Réception du Lien</h3>
+                            <p class="text-mocha-700">Le voyageur reçoit un lien personnalisé 48h avant son arrivée avec toutes les informations nécessaires.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-2">Vérification d'Identité</h3>
+                            <p class="text-mocha-700">Scan sécurisé des documents d'identité et validation automatique pour un processus fluide.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">3</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-2">Accès Sécurisé</h3>
+                            <p class="text-mocha-700">Génération automatique du code d'accès et instructions détaillées pour l'entrée dans le logement.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">4</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-mocha-900 mb-2">Guide Interactif</h3>
+                            <p class="text-mocha-700">Présentation interactive du logement, équipements et recommandations locales personnalisées.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Mockup -->
+                <div class="flex justify-center">
+                    <div class="relative">
+                        <div class="w-80 h-96 bg-gradient-to-br from-mocha-900 to-gold-900 rounded-3xl p-6 shadow-2xl">
+                            <div class="bg-white rounded-2xl h-full p-6 flex flex-col">
+                                <div class="text-center mb-6">
+                                    <h4 class="text-lg font-bold text-mocha-900 mb-2">Bienvenue chez AskElena</h4>
+                                    <p class="text-sm text-mocha-600">Votre séjour commence ici</p>
+                                </div>
+                                
+                                <div class="space-y-4 flex-1">
+                                    <div class="bg-gradient-to-r from-mocha-50 to-gold-50 p-4 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-medium text-mocha-900">Identité vérifiée</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gradient-to-r from-mocha-50 to-gold-50 p-4 rounded-lg">
+                                        <div class="text-center">
+                                            <div class="text-2xl font-bold text-mocha-900 mb-1">A1B2C3</div>
+                                            <div class="text-xs text-mocha-600">Code d'accès</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-2">
+                                        <button class="w-full bg-gradient-to-r from-mocha-600 to-gold-600 text-white py-3 rounded-lg text-sm font-medium">
+                                            Guide du logement
+                                        </button>
+                                        <button class="w-full border border-mocha-300 text-mocha-600 py-3 rounded-lg text-sm font-medium">
+                                            Recommandations locales
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <p class="text-xs text-mocha-500">Besoin d'aide ? Contactez-nous 24h/24</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Human Touch Services -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                L'Excellence de l'Accueil Humain
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Conciergerie 24/7 -->
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl hover:shadow-lg transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Conciergerie 24/7</h3>
+                    <p class="text-mocha-700 mb-4">Assistance disponible à tout moment pour répondre aux besoins de vos voyageurs.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Support multilingue</li>
+                        <li>• Urgences techniques</li>
+                        <li>• Demandes spéciales</li>
+                        <li>• Recommandations locales</li>
+                    </ul>
+                </div>
+
+                <!-- Accueil Personnalisé -->
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl hover:shadow-lg transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Accueil Personnalisé</h3>
+                    <p class="text-mocha-700 mb-4">Rencontre physique optionnelle pour les clients premium et situations spéciales.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Remise de clés en main propre</li>
+                        <li>• Visite guidée du logement</li>
+                        <li>• Briefing quartier</li>
+                        <li>• Services sur-mesure</li>
+                    </ul>
+                </div>
+
+                <!-- Services Premium -->
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl hover:shadow-lg transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Services Premium</h3>
+                    <p class="text-mocha-700 mb-4">Prestations haut de gamme pour une expérience inoubliable.</p>
+                    <ul class="text-sm text-mocha-600 space-y-2">
+                        <li>• Panier d'accueil personnalisé</li>
+                        <li>• Réservations restaurants</li>
+                        <li>• Billets spectacles</li>
+                        <li>• Transport privé</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section id="temoignages" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Ce Que Disent Nos Voyageurs
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Témoignage 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-1.jpg') }}" 
+                             alt="Sarah M." 
+                             class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-mocha-900">Sarah M.</h4>
+                            <div class="flex text-gold-500">
+                                <span>★★★★★</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-mocha-700 italic mb-4">
+                        "Le check-in numérique était d'une simplicité déconcertante. En 2 minutes, j'avais tout ce qu'il me fallait. Et quand j'ai eu une question, l'équipe a répondu immédiatement !"
+                    </p>
+                    <div class="text-sm text-mocha-500">Séjour à Neuilly • Janvier 2024</div>
+                </div>
+
+                <!-- Témoignage 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-2.jpg') }}" 
+                             alt="Marcus L." 
+                             class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-mocha-900">Marcus L.</h4>
+                            <div class="flex text-gold-500">
+                                <span>★★★★★</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-mocha-700 italic mb-4">
+                        "Service exceptionnel ! L'accueil personnalisé et les recommandations sur-mesure ont rendu notre séjour parfait. Une attention aux détails remarquable."
+                    </p>
+                    <div class="text-sm text-mocha-500">Séjour à Courbevoie • Décembre 2023</div>
+                </div>
+
+                <!-- Témoignage 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-3.jpg') }}" 
+                             alt="Elena R." 
+                             class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-mocha-900">Elena R.</h4>
+                            <div class="flex text-gold-500">
+                                <span>★★★★★</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-mocha-700 italic mb-4">
+                        "Arrivée tardive un dimanche soir, aucun problème grâce au système numérique. Et le lendemain, l'équipe nous a organisé une visite privée de Paris. Magique !"
+                    </p>
+                    <div class="text-sm text-mocha-500">Séjour à Paris 16 • Mars 2024</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-mocha-900 text-center mb-12 font-playfair">
+                Nos Résultats Parlent d'Eux-Mêmes
+            </h2>
+            
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2" data-metric>98%</div>
+                    <div class="text-mocha-700">Satisfaction voyageurs</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2" data-metric>2min</div>
+                    <div class="text-mocha-700">Temps check-in moyen</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2" data-metric>24/7</div>
+                    <div class="text-mocha-700">Support disponible</div>
+                </div>
+                <div class="bg-gradient-to-br from-mocha-50 to-gold-50 p-8 rounded-xl">
+                    <div class="text-4xl font-bold text-mocha-900 mb-2" data-metric>4.9★</div>
+                    <div class="text-mocha-700">Note moyenne</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-br from-mocha-900 to-gold-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-6 font-playfair">
+                Offrez une Expérience d'Exception
+            </h2>
+            <p class="text-xl mb-8 opacity-90">
+                Transformez l'accueil de vos voyageurs avec notre service premium.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#contact" class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    Découvrir nos tarifs
+                </a>
+                <a href="#demo" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-mocha-900 transition-all duration-300">
+                    Demander une démo
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Animate statistics on scroll
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const metrics = entry.target.querySelectorAll('[data-metric]');
+                metrics.forEach(metric => {
+                    animateMetric(metric);
+                });
+            }
+        });
+    }, observerOptions);
+    
+    const statsSection = document.querySelector('.grid.md\\:grid-cols-4');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+    
+    function animateMetric(element) {
+        const finalValue = element.textContent;
+        
+        if (finalValue.includes('%')) {
+            const numericValue = parseInt(finalValue);
+            animateNumber(element, numericValue, (val) => val + '%');
+        } else if (finalValue.includes('min')) {
+            const numericValue = parseInt(finalValue);
+            animateNumber(element, numericValue, (val) => val + 'min');
+        } else if (finalValue.includes('★')) {
+            const numericValue = parseFloat(finalValue) * 10;
+            animateNumber(element, numericValue, (val) => (val / 10).toFixed(1) + '★');
+        } else if (finalValue === '24/7') {
+            // Special case for 24/7
+            element.style.opacity = '0';
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, 200);
+            }, 500);
+        }
+    }
+    
+    function animateNumber(element, targetValue, formatter) {
+        let currentValue = 0;
+        const increment = targetValue / 50;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= targetValue) {
+                currentValue = targetValue;
+                clearInterval(timer);
+            }
+            
+            element.textContent = formatter(Math.floor(currentValue));
+        }, 30);
+    }
+});
+</script>
+{% endblock %}

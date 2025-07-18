@@ -1,0 +1,804 @@
+{% extends "base.html" %}
+
+{% block title %}AskElena - Plus qu'une conciergerie, une alliée discrète{% endblock %}
+{% block description %}Révélez la valeur de votre bien avec notre approche premium : rénovation, gestion locative et hospitalité 5 étoiles sans stress.{% endblock %}
+
+{% block content %}
+<!-- Hero Section Immersif -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Video Background Placeholder -->
+    <div class="absolute inset-0 bg-gradient-to-br from-mocha-900 via-mocha-800 to-gold-900">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <!-- Animated Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width=&quot;80&quot; height=&quot;80&quot; viewBox=&quot;0 0 80 80&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;><g fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;><g fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.1&quot;><path d=&quot;M40 40c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm20-20c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20z&quot;/></g></g></svg>'); background-size: 80px 80px; animation: float 20s ease-in-out infinite;"></div>
+        </div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-white">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-playfair">
+                Plus qu'une conciergerie,<br>
+                <span class="text-gold-400">une alliée discrète pour révéler</span><br>
+                la valeur de votre bien.
+            </h1>
+            <p class="text-xl text-white mt-6 mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                Rénovation, gestion locative, hospitalité 5 étoiles — sans aucun stress.
+            </p>
+            
+            <!-- CTA Animé -->
+            <div class="mb-16">
+                <a href="#simulateur" class="inline-block bg-gradient-to-r from-gold-500 to-gold-600 text-white px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 animate-pulse-slow scroll-smooth">
+                    ✨ Estimer mes gains
+                    <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div class="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Notre Promesse - Feel. Think. Trust. -->
+<section id="promesse" class="py-20 bg-gradient-to-br from-white to-mocha-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-bold text-mocha-900 mb-8 font-playfair">
+                Notre Promesse
+            </h2>
+            <p class="text-xl text-mocha-700 mb-12 leading-relaxed">
+                Trois piliers pour transformer votre investissement en succès durable
+            </p>
+            
+            <ul class="space-y-8 text-left max-w-3xl mx-auto">
+                <li class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">T</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-mocha-900 mb-2">Think</h3>
+                        <p class="text-lg text-mocha-700">Nous valorisons votre bien comme un actif stratégique, avec une approche data-driven et une vision long terme.</p>
+                    </div>
+                </li>
+                
+                <li class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-gold-600 to-mocha-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">F</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-mocha-900 mb-2">Feel</h3>
+                        <p class="text-lg text-mocha-700">Chaque locataire vit une expérience mémorable, humaine et élégante qui génère des avis 5 étoiles.</p>
+                    </div>
+                </li>
+                
+                <li class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">T</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-mocha-900 mb-2">Trust</h3>
+                        <p class="text-lg text-mocha-700">Vous déléguez sans jamais perdre le contrôle, avec un suivi transparent et des rapports détaillés.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Storytelling Visuel - Avant/Après -->
+<section class="py-20 bg-mocha-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-playfair">
+                    Transformations qui parlent
+                </h2>
+                <p class="text-xl opacity-90">
+                    Découvrez comment nous révélons le potentiel caché de chaque bien
+                </p>
+            </div>
+            
+            <!-- Cas Client Courbevoie -->
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+                <div>
+                    <div class="bg-gradient-to-r from-gold-500 to-gold-600 text-black px-4 py-2 rounded-full inline-block text-sm font-semibold mb-4">
+                        Cas client • Courbevoie
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4 font-playfair">
+                        Un T2 froid et impersonnel transformé en cocon chic
+                    </h3>
+                    <p class="text-lg opacity-90 mb-6 leading-relaxed">
+                        Loué <strong class="text-gold-400">150€/nuit</strong> avec un taux d'occupation de <strong class="text-gold-400">85%</strong>. 
+                        ROI atteint en 18 mois grâce à notre approche premium.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-white/10 rounded-lg p-4">
+                            <div class="text-2xl font-bold text-gold-400">+180%</div>
+                            <div class="text-sm opacity-80">Revenus vs location classique</div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-4">
+                            <div class="text-2xl font-bold text-gold-400">4.9★</div>
+                            <div class="text-sm opacity-80">Note moyenne</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div id="slider-container" style="position: relative; height: 400px; overflow: hidden; border-radius: 1rem; background: #000;">
+                        <!-- Image avant -->
+                        <img src="{{ url_for('static', filename='images/after-courbevoie.jpg') }}" 
+                             alt="Avant rénovation" 
+                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                        
+                        <!-- Image après avec masque -->
+                        <div id="after-mask" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='images/before-courbevoie.jpg') }}" 
+                                 alt="Après rénovation" 
+                                 style="width: 200%; height: 100%; object-fit: cover;">
+                        </div>
+                        
+                        <!-- Ligne centrale -->
+                        <div id="center-line" style="position: absolute; top: 0; height: 100%; left: 50%; width: 4px; background: white; transform: translateX(-50%); box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>
+                        
+                        <!-- Bouton draggable -->
+                        <div id="drag-button" 
+                             onmousedown="startDrag(event)"
+                             ontouchstart="startDrag(event)"
+                             style="position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; background: white; border-radius: 50%; transform: translate(-50%, -50%); cursor: ew-resize; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 20px; color: #666;">⟷</span>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        let isDragging = false;
+                        
+                        function startDrag(e) {
+                            isDragging = true;
+                            e.preventDefault();
+                            console.log('Drag started');
+                        }
+                        
+                        function updateSlider(clientX) {
+                            const container = document.getElementById('slider-container');
+                            const afterMask = document.getElementById('after-mask');
+                            const centerLine = document.getElementById('center-line');
+                            const dragButton = document.getElementById('drag-button');
+                            
+                            const rect = container.getBoundingClientRect();
+                            const x = clientX - rect.left;
+                            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                            
+                            afterMask.style.width = percentage + '%';
+                            centerLine.style.left = percentage + '%';
+                            dragButton.style.left = percentage + '%';
+                            
+                            console.log('Slider updated:', percentage + '%');
+                        }
+                        
+                        document.addEventListener('mousemove', function(e) {
+                            if (isDragging) {
+                                updateSlider(e.clientX);
+                            }
+                        });
+                        
+                        document.addEventListener('mouseup', function() {
+                            if (isDragging) {
+                                isDragging = false;
+                                console.log('Drag ended');
+                            }
+                        });
+                        
+                        document.addEventListener('touchmove', function(e) {
+                            if (isDragging) {
+                                e.preventDefault();
+                                updateSlider(e.touches[0].clientX);
+                            }
+                        });
+                        
+                        document.addEventListener('touchend', function() {
+                            isDragging = false;
+                        });
+                        
+                        // Clic pour déplacer
+                        document.getElementById('slider-container').addEventListener('click', function(e) {
+                            if (e.target.id !== 'drag-button') {
+                                updateSlider(e.clientX);
+                            }
+                        });
+                    </script>
+                    
+                    <div class="grid grid-cols-2 gap-8 mt-6">
+                        <div class="text-center">
+                            <h4 class="text-lg font-semibold mb-2 text-white">Avant</h4>
+                            <p class="text-white/70 text-sm">Appartement standard</p>
+                        </div>
+                        <div class="text-center">
+                            <h4 class="text-lg font-semibold mb-2 text-white">Après</h4>
+                            <p class="text-white/70 text-sm">Design haut de gamme</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Premium Section -->
+<section class="py-20 bg-gradient-to-br from-white to-mocha-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Louez votre bien en toute sérénité
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                AskElena est une conciergerie immobilière premium à Neuilly-sur-Seine, spécialisée dans la gestion locative clé en main. Nous valorisons et optimisons votre bien pour générer des revenus sans contraintes.
+            </p>
+        </div>
+        
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 mb-12">
+                <h3 class="text-2xl font-serif font-bold text-gray-900 mb-6 text-center">
+                    Gestion complète de A à Z
+                </h3>
+                <p class="text-gray-600 text-center mb-8">
+                    Chez AskElena, nous nous occupons de toutes les étapes de la gestion locative pour vous permettre de maximiser vos revenus sans effort. De l'optimisation de votre bien à la satisfaction des locataires, nous assurons une gestion clé en main et haut de gamme.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Valorisation de votre bien</h4>
+                            <p class="text-gray-600 text-sm">Mise aux normes, aménagement et optimisation pour une rentabilité accrue.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Gestion des réservations</h4>
+                            <p class="text-gray-600 text-sm">Création et diffusion des annonces, gestion des réservations en temps réel.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Accueil et suivi des locataires</h4>
+                            <p class="text-gray-600 text-sm">Check-in / check-out, assistance 24/7 pour une expérience locative premium.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Entretien et maintenance</h4>
+                            <p class="text-gray-600 text-sm">Nettoyage entre les séjours, réparations et suivi de l'état du bien.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 md:col-span-2">
+                        <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Services exclusifs</h4>
+                            <p class="text-gray-600 text-sm">Conciergerie haut de gamme, organisation d'expériences personnalisées pour les locataires.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <p class="text-lg font-semibold text-mocha-600">
+                        Avec AskElena, louez en toute sérénité : nous prenons en charge 100% de la gestion pour vous ! ✅
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Revenus Garantis Section -->
+<section class="py-20 bg-gradient-to-br from-mocha-900 to-mocha-800 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                Revenus garantis sans contraintes ✨
+            </h2>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                Avec AskElena, vous bénéficiez d'une gestion locative optimisée et sans stress, vous assurant des revenus réguliers sans avoir à vous occuper de quoi que ce soit.
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-2xl mb-4">✅</div>
+                    <h3 class="text-xl font-semibold mb-3">Revenus garantis</h3>
+                    <p class="text-white/80">Nous optimisons l'occupation et les tarifs pour maximiser votre rentabilité.</p>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-2xl mb-4">✅</div>
+                    <h3 class="text-xl font-semibold mb-3">Zéro contrainte</h3>
+                    <p class="text-white/80">Nous gérons tout, de l'annonce à l'accueil des locataires, en passant par l'entretien.</p>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-2xl mb-4">✅</div>
+                    <h3 class="text-xl font-semibold mb-3">Flexibilité totale</h3>
+                    <p class="text-white/80">Vous pouvez récupérer votre bien quand vous le souhaitez, selon vos besoins.</p>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-2xl mb-4">✅</div>
+                    <h3 class="text-xl font-semibold mb-3">Sécurité et tranquillité</h3>
+                    <p class="text-white/80">Sélection rigoureuse des locataires et gestion des imprévus par notre équipe.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-xl font-semibold text-gold-300">
+                    Confiez-nous votre bien et profitez d'un revenu passif garanti, sans effort ! ✨
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Flexibilité Contractuelle -->
+<section class="py-20 bg-gradient-to-br from-gold-50 to-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Flexibilité totale : contrat 1 à 10 ans 🔄
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Chez AskElena, nous nous adaptons à vos besoins avec des contrats flexibles et transparents, allant de 1 à 10 ans, pour vous offrir une gestion locative sans contrainte.
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Durée ajustable</h4>
+                                <p class="text-gray-600 text-sm">Choisissez la période qui vous convient, sans engagement rigide.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Sortie simplifiée</h4>
+                                <p class="text-gray-600 text-sm">Nos contrats incluent des clauses annuelles de résiliation claires et faciles à appliquer.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Utilisation libre de votre bien</h4>
+                                <p class="text-gray-600 text-sm">Vous pouvez récupérer votre logement à tout moment selon vos besoins.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 bg-gold-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Un service sur-mesure</h4>
+                                <p class="text-gray-600 text-sm">Que vous ayez un projet de location courte ou longue durée, nous nous adaptons.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <p class="text-lg font-semibold text-mocha-600">
+                        Profitez d'une gestion locative flexible et sans stress, avec une totale maîtrise de votre bien ! 🔑
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Une journée avec Elena -->
+<section class="py-20 bg-gradient-to-br from-mocha-50 to-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-mocha-900 mb-6 font-playfair">
+                    Une journée avec Elena
+                </h2>
+                <p class="text-xl text-mocha-700">
+                    Découvrez l'expérience humaine qui fait la différence
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="text-3xl">👩‍🍳</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">L'accueil chaleureux</h3>
+                    <p class="text-mocha-700 leading-relaxed">
+                        Elle accueille vos hôtes avec le sourire — et un panier du marché local pour une première impression inoubliable.
+                    </p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-gold-600 to-mocha-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="text-3xl">🗝️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">La disponibilité 24/7</h3>
+                    <p class="text-mocha-700 leading-relaxed">
+                        Elle remet les clés avec bienveillance, et reste joignable 24/7 pour tous les besoins de vos invités.
+                    </p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-mocha-600 to-gold-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <span class="text-3xl">💻</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-mocha-900 mb-4">Le suivi transparent</h3>
+                    <p class="text-mocha-700 leading-relaxed">
+                        Elle vous envoie chaque mois un tableau clair des revenus générés, avec analyses et recommandations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nos Engagements Narrés -->
+<section class="py-20 bg-mocha-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-playfair">
+                    Nos Engagements
+                </h2>
+                <p class="text-xl opacity-90">
+                    Trois promesses qui changent tout
+                </p>
+            </div>
+            
+            <div class="space-y-12">
+                <!-- Engagement 1 -->
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="md:w-1/3">
+                        <div class="w-24 h-24 bg-gradient-to-r from-gold-500 to-gold-600 rounded-full flex items-center justify-center mx-auto">
+                            <span class="text-4xl">💰</span>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-2xl font-bold mb-4 text-gold-400">On investit pour vous</h3>
+                        <p class="text-lg leading-relaxed opacity-90">
+                            « Vous partez l'été ? On refait votre appartement à nos frais. » 
+                            Préfinancement des travaux, aucune avance de votre part. Nous croyons en votre projet.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Engagement 2 -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+                    <div class="md:w-1/3">
+                        <div class="w-24 h-24 bg-gradient-to-r from-gold-500 to-gold-600 rounded-full flex items-center justify-center mx-auto">
+                            <span class="text-4xl">🤝</span>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 md:text-right">
+                        <h3 class="text-2xl font-bold mb-4 text-gold-400">On partage les fruits</h3>
+                        <p class="text-lg leading-relaxed opacity-90">
+                            « Quand les travaux sont remboursés, on divise les loyers à parts égales. » 
+                            Un partenariat équitable où votre succès est notre succès.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Engagement 3 -->
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="md:w-1/3">
+                        <div class="w-24 h-24 bg-gradient-to-r from-gold-500 to-gold-600 rounded-full flex items-center justify-center mx-auto">
+                            <span class="text-4xl">⭐</span>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-2xl font-bold mb-4 text-gold-400">On incarne l'hospitalité</h3>
+                        <p class="text-lg leading-relaxed opacity-90">
+                            « Nos équipes sont formées dans l'hôtellerie de luxe et la culture du soin. » 
+                            Chaque détail compte pour créer des souvenirs inoubliables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Zones Géographiques -->
+<section class="py-20 bg-gradient-to-br from-mocha-900 to-mocha-800 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                Pourquoi faire confiance à AskElena ?
+            </h2>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                AskElena est une conciergerie immobilière premium basée à Neuilly-sur-Seine, spécialisée dans la gestion locative clé en main sur l'Ouest Parisien et la région niçoise.
+            </p>
+        </div>
+        
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                    <div class="text-3xl mb-4">📍</div>
+                    <h3 class="text-xl font-semibold mb-4">L'Ouest Parisien</h3>
+                    <p class="text-white/80 mb-4">Neuilly-sur-Seine, Boulogne-Billancourt, Levallois-Perret, Puteaux, Courbevoie, Paris 16e et 17e.</p>
+                    <ul class="text-white/70 text-sm space-y-2">
+                        <li>✅ Estimation du loyer et étude du marché</li>
+                        <li>✅ Mise en conformité et valorisation</li>
+                        <li>✅ Gestion locative saisonnière et meublée</li>
+                        <li>✅ Sélection rigoureuse des locataires</li>
+                        <li>✅ Conciergerie haut de gamme</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                    <div class="text-3xl mb-4">📍</div>
+                    <h3 class="text-xl font-semibold mb-4">La région niçoise</h3>
+                    <p class="text-white/80 mb-4">Nice, Cannes, Antibes et les alentours sur la Côte d'Azur.</p>
+                    <p class="text-white/70 text-sm mb-4">Nous étudions également les demandes spécifiques en dehors de ces zones et avons vocation à nous étendre pour répondre aux besoins de nos clients.</p>
+                    <div class="text-center">
+                        <p class="text-gold-300 font-semibold">Confiez-nous votre bien et profitez d'une gestion locative clé en main, sans contraintes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Témoignages -->
+<section class="py-20 bg-gradient-to-br from-mocha-50 to-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Ils nous font confiance ⭐⭐⭐⭐⭐
+            </h2>
+            <p class="text-xl text-gray-600">
+                Des transformations qui changent des vies
+            </p>
+        </div>
+        
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-1.jpg') }}" alt="Daniel" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Daniel</h4>
+                            <p class="text-gray-600 text-sm">Neuilly-sur-Seine</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "Je ne reste pas toute l'année dans ma résidence principale et je voulais optimiser ma retraite. Elena m'a convaincu de lui confier mon appartement lorsqu'il n'est pas utilisé. AskElena a créé un plan avec moi, financé les travaux et l'achat de meubles, tout en gérant les démarches administratives, le choix des locataires saisonniers et l'entretien. Un service clé en main qui m'a permis de générer des revenus sans stress !"
+                    </p>
+                    <div class="flex text-gold-400">
+                        <span>⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-2.jpg') }}" alt="Marie & Jean" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Marie & Jean</h4>
+                            <p class="text-gray-600 text-sm">Puteaux</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "Avec les enfants partis, nous avions de la place pour réaménager notre bateau-logement et y créer un studio indépendant. AskElena nous a accompagnés de A à Z : définition du projet, financement des travaux, ameublement et gestion locative. Aujourd'hui, notre studio est loué toute l'année et nous pouvons gâter nos petits-enfants sans nous priver. Un accompagnement précieux et un service impeccable !"
+                    </p>
+                    <div class="flex text-gold-400">
+                        <span>⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ url_for('static', filename='images/avatar-3.jpg') }}" alt="Sophie" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Sophie</h4>
+                            <p class="text-gray-600 text-sm">Boulogne-Billancourt</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "J'hésitais à louer mon appartement en location meublée par peur des contraintes. AskElena m'a proposé une solution clé en main avec un accompagnement personnalisé : estimation du loyer, mise en conformité du bien, gestion des locataires et entretien régulier. Grâce à leur service de conciergerie premium, mes locataires sont ravis et je n'ai aucune gestion à faire. Une vraie tranquillité d'esprit !"
+                    </p>
+                    <div class="flex text-gold-400">
+                        <span>⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Simulateur LMNP -->
+<section id="simulateur" class="py-20 bg-gradient-to-br from-mocha-900 to-mocha-800 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-playfair">
+                    Simulateur LMNP
+                </h2>
+                <p class="text-xl opacity-90">
+                    Découvrez le potentiel de votre bien en 2 minutes
+                </p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                <form id="lmnp-simulator" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Localisation</label>
+                            <select name="location" required class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-gold-400">
+                                <option value="">Sélectionnez une ville</option>
+                                <option value="paris">Paris</option>
+                                <option value="neuilly">Neuilly-sur-Seine</option>
+                                <option value="puteaux">Puteaux</option>
+                                <option value="courbevoie">Courbevoie</option>
+                                <option value="boulogne">Boulogne-Billancourt</option>
+                                <option value="levallois">Levallois-Perret</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Surface (m²)</label>
+                            <input type="number" name="surface" min="20" max="200" required 
+                                   class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-gold-400"
+                                   placeholder="Ex: 45">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Taux d'occupation souhaité (%)</label>
+                        <p class="text-sm text-gold-300 mb-3">
+                            💡 <em>Logement secondaire : 120j max/an</em> — mais pas de souci, AskElena vous renseignera comme il faut !
+                        </p>
+                        <input type="range" name="occupancy" min="50" max="95" value="75" 
+                               class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider">
+                        <div class="flex justify-between text-sm opacity-70 mt-1">
+                            <span>50%</span>
+                            <span id="occupancy-value">75%</span>
+                            <span>95%</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        🚀 Calculer mes revenus
+                    </button>
+                </form>
+                
+                <!-- Résultats -->
+                <div id="simulator-results" class="hidden mt-8 p-6 bg-white/20 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-gold-400">Estimation de vos revenus</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gold-400" id="monthly-revenue">-</div>
+                            <div class="text-sm opacity-80">Revenus mensuels</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gold-400" id="annual-revenue">-</div>
+                            <div class="text-sm opacity-80">Revenus annuels</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gold-400" id="roi-months">-</div>
+                            <div class="text-sm opacity-80">ROI (mois)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final Émotionnel -->
+<section class="py-20 bg-gradient-to-br from-gold-500 to-gold-600 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h3 class="text-3xl md:text-5xl font-bold mb-6 font-playfair">
+                Et si votre appartement devenait votre meilleur associé ?
+            </h3>
+            <p class="text-xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto">
+                Estimez vos gains et recevez une projection personnalisée sous 48h. 
+                Aucun engagement, juste une conversation avec nos experts.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <a href="#simulateur" class="bg-white text-gold-600 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    📊 Estimer mes gains
+                </a>
+                <a href="mailto:contact@askelena.com" class="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-gold-600 transition-all duration-300">
+                    💬 Parler à un expert
+                </a>
+            </div>
+            
+            <!-- Garanties -->
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-2xl">🔒</span>
+                    <span class="font-semibold">Aucun engagement</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-2xl">⚡</span>
+                    <span class="font-semibold">Réponse sous 48h</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-2xl">🎯</span>
+                    <span class="font-semibold">Étude personnalisée</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Smooth scrolling
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Occupancy slider
+const occupancySlider = document.querySelector('input[name="occupancy"]');
+const occupancyValue = document.getElementById('occupancy-value');
+
+if (occupancySlider && occupancyValue) {
+    occupancySlider.addEventListener('input', function() {
+        occupancyValue.textContent = this.value + '%';
+    });
+}
+
+// Animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-fade-in-up');
+        }
+    });
+}, observerOptions);
+
+// Observe elements for animation
+document.querySelectorAll('section > div').forEach(el => {
+    observer.observe(el);
+});
+
+// Le slider est maintenant géré par le script inline ci-dessus
+</script>
+<script src="{{ url_for('static', filename='js/before-after-slider.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simulator.js') }}"></script>
+{% endblock %}

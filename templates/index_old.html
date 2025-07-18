@@ -1,0 +1,593 @@
+{% extends "base.html" %}
+
+{% block title %}AskElena - Plus qu'une conciergerie, une alliée discrète{% endblock %}
+{% block description %}Révélez la valeur de votre bien avec notre approche premium : rénovation, gestion locative et hospitalité 5 étoiles sans stress.{% endblock %}
+
+{% block content %}
+<!-- Hero Section Immersif -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Video Background Placeholder -->
+    <div class="absolute inset-0 bg-gradient-to-br from-mocha-900 via-mocha-800 to-gold-900">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <!-- Animated Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><path d="M40 40c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm20-20c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20z"/></g></g></svg>'); background-size: 80px 80px; animation: float 20s ease-in-out infinite;"></div>
+        </div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10 text-white">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-playfair">
+                Plus qu'une conciergerie,<br>
+                <span class="text-gold-400">une alliée discrète pour révéler</span><br>
+                la valeur de votre bien.
+            </h1>
+            <p class="text-xl text-white mt-6 mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                Rénovation, gestion locative, hospitalité 5 étoiles — sans aucun stress.
+            </p>
+            
+            <!-- CTA Animé -->
+            <div class="mb-16">
+                <a href="#simulateur" class="inline-block bg-gradient-to-r from-gold-500 to-gold-600 text-white px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 animate-pulse-slow">
+                    ✨ Estimer mes gains
+                    <svg class="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div class="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+        </div>
+    </div>
+</section>
+                </p>
+            </div>
+            
+            <!-- On optimise -->
+            <div class="text-center group">
+                <div class="w-20 h-20 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <lava-icon name="trending-up" class="w-10 h-10 text-white"></lava-icon>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-4">On optimise</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Algorithme IA + split 50/50 après ROI. Dashboard temps réel pour suivre vos performances.
+                </p>
+            </div>
+            
+            <!-- On chouchoute -->
+            <div class="text-center group">
+                <div class="w-20 h-20 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <lava-icon name="star" class="w-10 h-10 text-white"></lava-icon>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-4">On chouchoute</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Services premium : chef à domicile, chauffeur privé, conciergerie 5 étoiles.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="temoignages" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <div class="flex items-center justify-center mb-4">
+                <div class="flex text-gold-400 text-2xl">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <span class="ml-2 text-xl font-semibold text-gray-900">4,9/5</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Ils nous font confiance
+            </h2>
+            <p class="text-xl text-gray-600">Plus de 127 propriétaires satisfaits</p>
+        </div>
+        
+        <div class="carousel-container relative">
+            <div class="carousel-track flex transition-transform duration-500 ease-in-out" id="testimonials-track">
+                <!-- Testimonial 1 -->
+                <div class="carousel-slide min-w-full md:min-w-1/2 lg:min-w-1/3 px-4">
+                    <div class="bg-gray-50 rounded-2xl p-8 h-full">
+                        <div class="flex text-gold-400 mb-4">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <p class="text-gray-700 mb-6 italic">
+                            "Grâce à AskElena, mon appartement à Neuilly génère 3 200€/mois. L'équipe gère tout, je n'ai plus aucun stress."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="{{ url_for('static', filename='images/daniel-neuilly.jpg') }}" 
+                                 alt="Daniel" 
+                                 class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold text-gray-900">Daniel M.</p>
+                                <p class="text-gray-600 text-sm">Neuilly-sur-Seine</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="carousel-slide min-w-full md:min-w-1/2 lg:min-w-1/3 px-4">
+                    <div class="bg-gray-50 rounded-2xl p-8 h-full">
+                        <div class="flex text-gold-400 mb-4">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <p class="text-gray-700 mb-6 italic">
+                            "Service exceptionnel ! Nos invités sont ravis et nous recommandent systématiquement. ROI atteint en 8 mois."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="{{ url_for('static', filename='images/famille-puteaux.jpg') }}" 
+                                 alt="Famille Puteaux" 
+                                 class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold text-gray-900">Famille L.</p>
+                                <p class="text-gray-600 text-sm">Puteaux</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="carousel-slide min-w-full md:min-w-1/2 lg:min-w-1/3 px-4">
+                    <div class="bg-gray-50 rounded-2xl p-8 h-full">
+                        <div class="flex text-gold-400 mb-4">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                        <p class="text-gray-700 mb-6 italic">
+                            "L'accompagnement est parfait. De la rénovation à la gestion quotidienne, tout est pris en charge avec professionnalisme."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="{{ url_for('static', filename='images/marie-paris.jpg') }}" 
+                                 alt="Marie" 
+                                 class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold text-gray-900">Marie C.</p>
+                                <p class="text-gray-600 text-sm">Paris 16ème</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carousel Controls -->
+            <button class="carousel-btn carousel-prev" aria-label="Témoignage précédent" title="Voir le témoignage précédent">
+                <svg class="w-5 h-5 text-mocha-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button class="carousel-btn carousel-next" aria-label="Témoignage suivant" title="Voir le témoignage suivant">
+                <svg class="w-5 h-5 text-mocha-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Before/After Section -->
+<section class="py-20 bg-gray-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                Nos transformations
+            </h2>
+            <p class="text-xl text-gray-300">
+                Appartement Courbevoie - Objectif ROI fin 2025
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="before-after-slider relative overflow-hidden rounded-2xl" id="before-after-slider">
+                <img src="{{ url_for('static', filename='images/before-courbevoie.jpg') }}" 
+                     alt="Avant rénovation" 
+                     class="w-full h-96 object-cover">
+                <div class="after-image absolute inset-0 overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/after-courbevoie.jpg') }}" 
+                         alt="Après rénovation" 
+                         class="w-full h-96 object-cover">
+                </div>
+                <div class="slider-handle absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize">
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8 mt-8">
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-2">Avant</h3>
+                    <p class="text-gray-400">Appartement standard</p>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-2">Après</h3>
+                    <p class="text-gray-400">Design haut de gamme</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Simulateur LMNP -->
+<section id="simulateur" class="py-20 bg-gradient-to-br from-mocha-50 to-gold-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Calculez vos revenus potentiels
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Estimation personnalisée en temps réel
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <form id="simulator-form" class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Localisation -->
+                        <div>
+                            <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Localisation
+                            </label>
+                            <select id="location" name="location" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-mocha-500 focus:border-transparent">
+                                <option value="">Sélectionnez une ville</option>
+                                <option value="paris">Paris</option>
+                                <option value="neuilly">Neuilly-sur-Seine</option>
+                                <option value="puteaux">Puteaux</option>
+                                <option value="courbevoie">Courbevoie</option>
+                                <option value="boulogne">Boulogne-Billancourt</option>
+                                <option value="levallois">Levallois-Perret</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Surface -->
+                        <div>
+                            <label for="surface" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Surface (m²)
+                            </label>
+                            <input type="number" id="surface" name="surface" min="20" max="200" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-mocha-500 focus:border-transparent" 
+                                   placeholder="Ex: 45">
+                        </div>
+                        
+                        <!-- Mois d'occupation -->
+                        <div>
+                            <label for="occupancy" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Mois d'occupation
+                            </label>
+                            <select id="occupancy" name="occupancy" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-mocha-500 focus:border-transparent">
+                                <option value="">Sélectionnez</option>
+                                <option value="6">6 mois</option>
+                                <option value="8">8 mois</option>
+                                <option value="10">10 mois</option>
+                                <option value="12">12 mois</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="bg-gradient-to-r from-mocha-600 to-gold-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                            Calculez vos revenus
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Résultats -->
+                <div id="simulator-results" class="hidden mt-12 p-8 bg-gradient-to-r from-mocha-50 to-gold-50 rounded-2xl">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Vos revenus estimés</h3>
+                        <p class="text-gray-600">Calcul basé sur nos données de performance</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-mocha-600 mb-2" id="monthly-revenue">-</div>
+                            <p class="text-gray-600">Revenus mensuels</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-gold-600 mb-2" id="annual-revenue">-</div>
+                            <p class="text-gray-600">Revenus annuels</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2" id="roi-months">-</div>
+                            <p class="text-gray-600">ROI en mois</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="#contact" class="bg-gradient-to-r from-mocha-600 to-gold-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 mr-4">
+                            Planifier un appel de 15 min
+                        </a>
+                        <a href="#" class="border-2 border-mocha-600 text-mocha-600 px-8 py-3 rounded-full font-semibold hover:bg-mocha-600 hover:text-white transition-all duration-300">
+                            Télécharger le rapport
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Nos services premium
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Une approche complète pour maximiser vos revenus
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Travaux & Design -->
+            <div class="group">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-2xl flex items-center justify-center mb-6">
+                        <lava-icon name="hammer" class="w-8 h-8 text-white"></lava-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Travaux & Design</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Rénovation complète avec designers d'intérieur. Matériaux haut de gamme et finitions premium.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Revenue Management IA -->
+            <div class="group">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-2xl flex items-center justify-center mb-6">
+                        <lava-icon name="brain" class="w-8 h-8 text-white"></lava-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Revenue Management IA</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Optimisation des prix en temps réel. Algorithme d'intelligence artificielle pour maximiser vos revenus.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Relation voyageurs 5* -->
+            <div class="group">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-2xl flex items-center justify-center mb-6">
+                        <lava-icon name="users" class="w-8 h-8 text-white"></lava-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Relation voyageurs 5*</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Accueil personnalisé, check-in premium, conciergerie 24/7. Expérience inoubliable garantie.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Maintenance & Linge -->
+            <div class="group">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <div class="w-16 h-16 bg-gradient-to-r from-mocha-600 to-gold-500 rounded-2xl flex items-center justify-center mb-6">
+                        <lava-icon name="shield-check" class="w-8 h-8 text-white"></lava-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Maintenance & Linge</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Maintenance préventive, linge hôtelier premium, nettoyage professionnel après chaque séjour.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lifestyle Gallery -->
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                L'expérience AskElena
+            </h2>
+            <p class="text-xl text-gray-600">
+                Louez sans stress. Offrez une expérience.
+            </p>
+        </div>
+        
+        <div class="lifestyle-carousel relative">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="relative overflow-hidden rounded-2xl group">
+                    <img src="{{ url_for('static', filename='images/lifestyle-concierge.jpg') }}" 
+                         alt="Service conciergerie" 
+                         class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                        <div class="p-6 text-white">
+                            <h3 class="text-xl font-semibold mb-2">Conciergerie premium</h3>
+                            <p class="text-gray-200">Service 24/7 pour vos invités</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative overflow-hidden rounded-2xl group">
+                    <img src="{{ url_for('static', filename='images/lifestyle-shopping.jpg') }}" 
+                         alt="Shopping privé" 
+                         class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                        <div class="p-6 text-white">
+                            <h3 class="text-xl font-semibold mb-2">Shopping privé</h3>
+                            <p class="text-gray-200">Expériences sur mesure</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative overflow-hidden rounded-2xl group">
+                    <img src="{{ url_for('static', filename='images/lifestyle-chef.jpg') }}" 
+                         alt="Chef à domicile" 
+                         class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                        <div class="p-6 text-white">
+                            <h3 class="text-xl font-semibold mb-2">Chef à domicile</h3>
+                            <p class="text-gray-200">Gastronomie française</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">
+                Insights propriétaires
+            </h2>
+            <p class="text-xl text-gray-600">
+                Conseils d'experts pour optimiser vos investissements
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <!-- Article 1 -->
+            <article class="group">
+                <div class="overflow-hidden rounded-2xl mb-4">
+                    <img src="{{ url_for('static', filename='images/blog-lmnp-2025.jpg') }}" 
+                         alt="Guide LMNP 2025" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-mocha-600 transition-colors">
+                    Guide LMNP 2025 : Optimisez vos revenus
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    Découvrez les nouvelles opportunités fiscales et les stratégies gagnantes pour 2025.
+                </p>
+                <a href="#" class="text-mocha-600 font-semibold hover:text-mocha-800 transition-colors">
+                    Lire l'article →
+                </a>
+            </article>
+            
+            <!-- Article 2 -->
+            <article class="group">
+                <div class="overflow-hidden rounded-2xl mb-4">
+                    <img src="{{ url_for('static', filename='images/blog-dpe-checklist.jpg') }}" 
+                         alt="Checklist DPE" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-mocha-600 transition-colors">
+                    Checklist DPE : Préparez vos biens
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    Tous les points à vérifier pour optimiser la performance énergétique de vos biens.
+                </p>
+                <a href="#" class="text-mocha-600 font-semibold hover:text-mocha-800 transition-colors">
+                    Télécharger la checklist →
+                </a>
+            </article>
+            
+            <!-- Article 3 -->
+            <article class="group">
+                <div class="overflow-hidden rounded-2xl mb-4">
+                    <img src="{{ url_for('static', filename='images/blog-tendances-2025.jpg') }}" 
+                         alt="Tendances 2025" 
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-mocha-600 transition-colors">
+                    Tendances location courte durée 2025
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    Les nouvelles attentes des voyageurs et comment s'adapter pour maximiser vos revenus.
+                </p>
+                <a href="#" class="text-mocha-600 font-semibold hover:text-mocha-800 transition-colors">
+                    Lire l'article →
+                </a>
+            </article>
+        </div>
+        
+        <div class="text-center">
+            <a href="#" class="bg-gradient-to-r from-mocha-600 to-gold-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+                Accéder au blog
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                Demandez votre estimation personnalisée
+            </h2>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Nos experts vous accompagnent dans votre projet d'investissement
+            </p>
+        </div>
+        
+        <div class="max-w-2xl mx-auto">
+            <form id="contact-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-gray-300 mb-2">
+                            Nom complet *
+                        </label>
+                        <input type="text" id="name" name="name" required 
+                               class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-gold-500 focus:border-transparent" 
+                               placeholder="Votre nom">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-300 mb-2">
+                            Email *
+                        </label>
+                        <input type="email" id="email" name="email" required 
+                               class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-gold-500 focus:border-transparent" 
+                               placeholder="votre@email.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="message" class="block text-sm font-semibold text-gray-300 mb-2">
+                        Message
+                    </label>
+                    <textarea id="message" name="message" rows="4" 
+                              class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-gold-500 focus:border-transparent" 
+                              placeholder="Décrivez votre projet..."></textarea>
+                </div>
+                
+                <div>
+                    <label for="files" class="block text-sm font-semibold text-gray-300 mb-2">
+                        Photos ou documents (optionnel)
+                    </label>
+                    <div class="relative">
+                        <input type="file" id="files" name="files" multiple accept=".jpg,.jpeg,.png,.pdf" 
+                               class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-white hover:file:bg-gold-600">
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="bg-gradient-to-r from-mocha-600 to-gold-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                        Envoyer & planifier un audit
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-8">
+                <p class="text-gray-400 mb-4">Ou planifiez directement un appel de 15 minutes</p>
+                <a href="#" class="inline-flex items-center text-gold-400 hover:text-gold-300 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Réserver un créneau
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/carousel.js') }}"></script>
+<script src="{{ url_for('static', filename='js/before-after-slider.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simulator.js') }}"></script>
+{% endblock %}
