@@ -1,0 +1,303 @@
+{% extends "estimation/base_estimation.html" %}
+
+{% block estimation_title %}Informations financières{% endblock %}
+{% block estimation_subtitle %}Étape 2/3 - Détails de votre projet d'investissement{% endblock %}
+
+{% block estimation_content %}
+<form method="POST" class="space-y-6">
+    {{ form.hidden_tag() }}
+    
+    <!-- Insights marché (si disponibles) -->
+    {% if market_insights %}
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-blue-900 mb-2">📈 Insights marché pour votre zone</h3>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+                <span class="font-medium">Loyer moyen:</span> 
+                <span class="text-blue-700">{{ market_insights.average_rent_per_m2 }}€/m²</span>
+            </div>
+            <div>
+                <span class="font-medium">Demande:</span> 
+                <span class="text-blue-700 capitalize">{{ market_insights.demand_level }}</span>
+            </div>
+            <div>
+                <span class="font-medium">Tendance:</span> 
+                <span class="text-blue-700 capitalize">{{ market_insights.market_trend }}</span>
+            </div>
+            <div>
+                <span class="font-medium">Recommandation:</span> 
+                <span class="text-blue-700">{{ market_insights.best_rental_type }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="grid md:grid-cols-1 gap-6">
+        
+        <!-- Prix d'achat et Loyer visé -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.purchase_price.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.purchase_price.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    {{ form.purchase_price(class="w-full px-4 py-3 pr-8 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent") }}
+                    <span class="absolute right-3 top-3 text-mocha-600">€</span>
+                </div>
+                {% if form.purchase_price.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.purchase_price.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <p class="mt-1 text-sm text-mocha-600">
+                    Prix d'acquisition total (frais inclus)
+                </p>
+            </div>
+
+            <div>
+                <label for="{{ form.target_rent.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.target_rent.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    {{ form.target_rent(class="w-full px-4 py-3 pr-8 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent", id="target-rent-input") }}
+                    <span class="absolute right-3 top-3 text-mocha-600">€/mois</span>
+                </div>
+                {% if form.target_rent.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.target_rent.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div id="rent-feedback" class="mt-1 text-sm"></div>
+            </div>
+        </div>
+
+        <!-- Apport et Durée crédit -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.down_payment.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.down_payment.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    {{ form.down_payment(class="w-full px-4 py-3 pr-8 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent", id="down-payment-input") }}
+                    <span class="absolute right-3 top-3 text-mocha-600">€</span>
+                </div>
+                {% if form.down_payment.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.down_payment.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div id="down-payment-percentage" class="mt-1 text-sm text-mocha-600"></div>
+            </div>
+
+            <div>
+                <label for="{{ form.loan_duration.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.loan_duration.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                {{ form.loan_duration(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent", id="loan-duration-select") }}
+                {% if form.loan_duration.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.loan_duration.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculs en temps réel -->
+    <div id="real-time-calculations" class="mt-6 p-4 bg-mocha-50 border border-mocha-200 rounded-lg">
+        <h3 class="font-semibold text-mocha-900 mb-3">📊 Calculs préliminaires</h3>
+        <div class="grid md:grid-cols-4 gap-4 text-center">
+            <div class="bg-white p-3 rounded-lg">
+                <div class="text-lg font-bold text-gold-600" id="gross-yield">-</div>
+                <div class="text-xs text-mocha-600">Rendement brut</div>
+            </div>
+            <div class="bg-white p-3 rounded-lg">
+                <div class="text-lg font-bold text-gold-600" id="monthly-cashflow">-</div>
+                <div class="text-xs text-mocha-600">Cash-flow mensuel</div>
+            </div>
+            <div class="bg-white p-3 rounded-lg">
+                <div class="text-lg font-bold text-gold-600" id="loan-amount">-</div>
+                <div class="text-xs text-mocha-600">Montant emprunté</div>
+            </div>
+            <div class="bg-white p-3 rounded-lg">
+                <div class="text-lg font-bold text-gold-600" id="monthly-payment">-</div>
+                <div class="text-xs text-mocha-600">Mensualité estimée</div>
+            </div>
+        </div>
+        <div class="mt-3 text-xs text-mocha-600 text-center">
+            * Calculs approximatifs - L'estimation finale sera plus précise
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+        <a href="{{ url_for('estimation.back_to_step', step_num=1) }}" 
+           class="flex items-center text-mocha-600 hover:text-mocha-800 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Retour
+        </a>
+        
+        <div class="text-sm text-mocha-600">
+            <span class="font-medium">Étape 2</span> sur 3
+        </div>
+        
+        <button type="submit" 
+                class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                id="next-button">
+            Voir mon estimation
+            <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const purchasePriceInput = document.getElementById('{{ form.purchase_price.id }}');
+    const targetRentInput = document.getElementById('target-rent-input');
+    const downPaymentInput = document.getElementById('down-payment-input');
+    const loanDurationSelect = document.getElementById('loan-duration-select');
+    
+    const grossYieldEl = document.getElementById('gross-yield');
+    const monthlyCashflowEl = document.getElementById('monthly-cashflow');
+    const loanAmountEl = document.getElementById('loan-amount');
+    const monthlyPaymentEl = document.getElementById('monthly-payment');
+    const downPaymentPercentageEl = document.getElementById('down-payment-percentage');
+    const rentFeedbackEl = document.getElementById('rent-feedback');
+    
+    // Données de marché (si disponibles)
+    const marketRentPerM2 = parseFloat('{{ market_insights.average_rent_per_m2 if market_insights else "30" }}');
+    const estimatedSurface = parseFloat('{{ session.estimation_data.step_1.surface if session.estimation_data and session.estimation_data.step_1 else "50" }}');
+    const marketRentEstimate = marketRentPerM2 * estimatedSurface;
+    
+    function updateCalculations() {
+        const purchasePrice = parseFloat(purchasePriceInput.value) || 0;
+        const targetRent = parseFloat(targetRentInput.value) || 0;
+        const downPayment = parseFloat(downPaymentInput.value) || 0;
+        const loanDuration = parseInt(loanDurationSelect.value) || 20;
+        
+        if (purchasePrice > 0 && targetRent > 0) {
+            // Rendement brut
+            const grossYield = (targetRent * 12 / purchasePrice * 100);
+            grossYieldEl.textContent = grossYield.toFixed(1) + '%';
+            
+            // Montant emprunté
+            const loanAmount = purchasePrice - downPayment;
+            loanAmountEl.textContent = formatCurrency(loanAmount);
+            
+            // Mensualité approximative (taux 3.5% approximatif)
+            const monthlyRate = 0.035 / 12;
+            const numPayments = loanDuration * 12;
+            let monthlyPayment = 0;
+            
+            if (loanAmount > 0 && monthlyRate > 0) {
+                monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                                (Math.pow(1 + monthlyRate, numPayments) - 1);
+            }
+            
+            monthlyPaymentEl.textContent = formatCurrency(monthlyPayment);
+            
+            // Cash-flow mensuel approximatif (charges estimées à 30% du loyer)
+            const monthlyCashflow = targetRent - (targetRent * 0.3) - monthlyPayment;
+            monthlyCashflowEl.textContent = formatCurrency(monthlyCashflow);
+            
+            // Couleur selon cash-flow
+            if (monthlyCashflow > 0) {
+                monthlyCashflowEl.className = 'text-lg font-bold text-green-600';
+            } else {
+                monthlyCashflowEl.className = 'text-lg font-bold text-red-600';
+            }
+        }
+        
+        // Pourcentage d'apport
+        if (purchasePrice > 0 && downPayment >= 0) {
+            const percentage = (downPayment / purchasePrice * 100);
+            downPaymentPercentageEl.textContent = `${percentage.toFixed(1)}% du prix d'achat`;
+            
+            if (percentage < 10) {
+                downPaymentPercentageEl.className = 'mt-1 text-sm text-red-600';
+                downPaymentPercentageEl.textContent += ' (Apport faible - financement difficile)';
+            } else if (percentage >= 20) {
+                downPaymentPercentageEl.className = 'mt-1 text-sm text-green-600';
+                downPaymentPercentageEl.textContent += ' (Excellent apport)';
+            } else {
+                downPaymentPercentageEl.className = 'mt-1 text-sm text-mocha-600';
+            }
+        }
+        
+        // Feedback sur le loyer
+        if (targetRent > 0 && marketRentEstimate > 0) {
+            const rentRatio = targetRent / marketRentEstimate;
+            
+            if (rentRatio >= 1.2) {
+                rentFeedbackEl.innerHTML = '<span class="text-red-600">⚠️ Loyer optimiste par rapport au marché</span>';
+            } else if (rentRatio >= 1.1) {
+                rentFeedbackEl.innerHTML = '<span class="text-orange-600">⚡ Loyer légèrement au-dessus du marché</span>';
+            } else if (rentRatio >= 0.9) {
+                rentFeedbackEl.innerHTML = '<span class="text-green-600">✅ Loyer cohérent avec le marché</span>';
+            } else {
+                rentFeedbackEl.innerHTML = '<span class="text-blue-600">💡 Potentiel d\'augmentation du loyer</span>';
+            }
+        }
+    }
+    
+    function formatCurrency(amount) {
+        if (amount === 0) return '-';
+        return new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'EUR',
+            maximumFractionDigits: 0
+        }).format(amount);
+    }
+    
+    // Mise à jour en temps réel
+    [purchasePriceInput, targetRentInput, downPaymentInput, loanDurationSelect].forEach(input => {
+        input.addEventListener('input', updateCalculations);
+        input.addEventListener('change', updateCalculations);
+    });
+    
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    const nextButton = document.getElementById('next-button');
+    
+    function validateForm() {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+            }
+        });
+        
+        nextButton.disabled = !isValid;
+    }
+    
+    // Validation en temps réel
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+    
+    // Calcul et validation initiaux
+    updateCalculations();
+    validateForm();
+});
+</script>
+{% endblock %}

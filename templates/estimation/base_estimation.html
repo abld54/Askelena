@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Estimation locative - AskElena{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-gradient-to-br from-mocha-50 to-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Header avec logo et progression -->
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <svg class="w-8 h-8 text-mocha-600" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <h1 class="text-2xl font-bold text-mocha-900">AskElena</h1>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-mocha-900 mb-2">
+                    {% block estimation_title %}Estimez vos gains locatifs{% endblock %}
+                </h2>
+                <p class="text-lg text-mocha-700">
+                    {% block estimation_subtitle %}Obtenez une estimation personnalisée en 3 étapes{% endblock %}
+                </p>
+            </div>
+
+            <!-- Barre de progression -->
+            {% if progress_percent is defined %}
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-mocha-700">Progression</span>
+                    <span class="text-sm font-medium text-mocha-700">{{ "%.0f"|format(progress_percent) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-gold-500 to-gold-600 h-2 rounded-full transition-all duration-500" 
+                         style="width: {{ progress_percent }}%"></div>
+                </div>
+                
+                <!-- Indicateurs d'étapes -->
+                <div class="flex justify-between mt-4">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                                    {% if step_num >= 1 %}bg-gold-500 text-white{% else %}bg-gray-200 text-gray-500{% endif %}">
+                            1
+                        </div>
+                        <span class="text-xs text-mocha-600 mt-1">Propriété</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                                    {% if step_num >= 2 %}bg-gold-500 text-white{% else %}bg-gray-200 text-gray-500{% endif %}">
+                            2
+                        </div>
+                        <span class="text-xs text-mocha-600 mt-1">Financier</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                                    {% if step_num >= 3 %}bg-gold-500 text-white{% else %}bg-gray-200 text-gray-500{% endif %}">
+                            3
+                        </div>
+                        <span class="text-xs text-mocha-600 mt-1">Contact</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Messages flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} mb-2 p-4 rounded-lg
+                                        {% if category == 'error' %}bg-red-100 border border-red-400 text-red-700
+                                        {% elif category == 'info' %}bg-blue-100 border border-blue-400 text-blue-700
+                                        {% else %}bg-green-100 border border-green-400 text-green-700{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Contenu principal -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                {% block estimation_content %}{% endblock %}
+            </div>
+
+            <!-- Navigation -->
+            {% if step_num is defined and step_num > 1 %}
+            <div class="mt-6 text-center">
+                <a href="{{ url_for('estimation.back_to_step', step_num=step_num-1) }}" 
+                   class="inline-flex items-center text-mocha-600 hover:text-mocha-800 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Retour à l'étape précédente
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Footer sécurité -->
+            <div class="mt-8 text-center">
+                <div class="flex items-center justify-center space-x-4 text-sm text-mocha-600">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <span>Données sécurisées</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>RGPD conforme</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <span>Estimation instantanée</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Auto-sauvegarde en session lors de la saisie
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        // Sauvegarde automatique toutes les 30 secondes
+        setInterval(function() {
+            const formData = new FormData(form);
+            // TODO: Implémenter sauvegarde AJAX
+        }, 30000);
+    }
+});
+
+// Validation en temps réel
+function setupRealTimeValidation() {
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+    });
+}
+
+function validateField(field) {
+    // TODO: Validation côté client
+}
+
+// Initialisation
+setupRealTimeValidation();
+</script>
+{% endblock %}

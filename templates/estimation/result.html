@@ -1,0 +1,300 @@
+{% extends "estimation/base_estimation.html" %}
+
+{% block estimation_title %}Votre estimation personnalisée{% endblock %}
+{% block estimation_subtitle %}Analyse complète de votre projet d'investissement locatif{% endblock %}
+
+{% block estimation_content %}
+<div class="space-y-8">
+    
+    <!-- Header avec score de confiance -->
+    <div class="text-center bg-gradient-to-r from-gold-50 to-mocha-50 border border-gold-200 rounded-xl p-6">
+        <div class="flex justify-center items-center space-x-4 mb-4">
+            <div class="text-4xl font-bold text-gold-600">{{ "%.1f"|format(estimation.confidence_score * 100) }}%</div>
+            <div class="text-left">
+                <div class="text-lg font-semibold text-mocha-900">Fiabilité de l'estimation</div>
+                <div class="text-sm text-mocha-600">Basée sur {{ estimation.data_sources|length }} sources de données</div>
+            </div>
+        </div>
+        <div class="text-sm text-mocha-700">
+            Estimation générée le {{ estimation.created_at.strftime('%d/%m/%Y à %H:%M') }}
+        </div>
+    </div>
+
+    <!-- Métriques principales -->
+    <div class="grid md:grid-cols-4 gap-6">
+        <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+            <div class="text-2xl font-bold text-green-600 mb-2">{{ "%.1f"|format(estimation.gross_yield) }}%</div>
+            <div class="text-sm text-mocha-600">Rendement brut</div>
+            <div class="text-xs text-mocha-500 mt-1">
+                {% if estimation.gross_yield >= 6 %}Excellent{% elif estimation.gross_yield >= 4 %}Bon{% else %}Moyen{% endif %}
+            </div>
+        </div>
+        
+        <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+            <div class="text-2xl font-bold text-blue-600 mb-2">{{ "%.1f"|format(estimation.net_yield) }}%</div>
+            <div class="text-sm text-mocha-600">Rendement net</div>
+            <div class="text-xs text-mocha-500 mt-1">Charges déduites</div>
+        </div>
+        
+        <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+            <div class="text-2xl font-bold {% if estimation.monthly_cashflow >= 0 %}text-green-600{% else %}text-red-600{% endif %} mb-2">
+                {{ "{:+,}".format(estimation.monthly_cashflow|int).replace(',', ' ') }}€
+            </div>
+            <div class="text-sm text-mocha-600">Cash-flow mensuel</div>
+            <div class="text-xs text-mocha-500 mt-1">
+                {% if estimation.monthly_cashflow > 200 %}Très positif{% elif estimation.monthly_cashflow >= 0 %}Équilibré{% else %}Déficitaire{% endif %}
+            </div>
+        </div>
+        
+        <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+            <div class="text-2xl font-bold text-purple-600 mb-2">{{ estimation.payback_years }} ans</div>
+            <div class="text-sm text-mocha-600">Retour sur investissement</div>
+            <div class="text-xs text-mocha-500 mt-1">Durée amortissement</div>
+        </div>
+    </div>
+
+    <!-- Détails financiers -->
+    <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-mocha-900 mb-4">💰 Détail financier</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="font-medium text-mocha-800 mb-3">Revenus mensuels</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Loyer estimé</span>
+                        <span class="font-medium">{{ "{:,}".format(estimation.estimated_rent|int).replace(',', ' ') }}€</span>
+                    </div>
+                    {% if estimation.additional_income > 0 %}
+                    <div class="flex justify-between">
+                        <span>Revenus annexes</span>
+                        <span class="font-medium">{{ "{:,}".format(estimation.additional_income|int).replace(',', ' ') }}€</span>
+                    </div>
+                    {% endif %}
+                    <div class="flex justify-between font-semibold border-t pt-2">
+                        <span>Total revenus</span>
+                        <span>{{ "{:,}".format((estimation.estimated_rent + estimation.additional_income)|int).replace(',', ' ') }}€</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-medium text-mocha-800 mb-3">Charges mensuelles</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Mensualité crédit</span>
+                        <span class="font-medium">{{ "{:,}".format(estimation.monthly_loan_payment|int).replace(',', ' ') }}€</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Charges & gestion</span>
+                        <span class="font-medium">{{ "{:,}".format(estimation.monthly_expenses|int).replace(',', ' ') }}€</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Assurances & taxes</span>
+                        <span class="font-medium">{{ "{:,}".format(estimation.monthly_taxes|int).replace(',', ' ') }}€</span>
+                    </div>
+                    <div class="flex justify-between font-semibold border-t pt-2">
+                        <span>Total charges</span>
+                        <span>{{ "{:,}".format((estimation.monthly_loan_payment + estimation.monthly_expenses + estimation.monthly_taxes)|int).replace(',', ' ') }}€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analyse de marché -->
+    {% if estimation.market_analysis %}
+    <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-mocha-900 mb-4">📊 Analyse de marché</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <div class="text-xl font-bold text-blue-600">{{ estimation.market_analysis.average_rent_per_m2 }}€/m²</div>
+                <div class="text-sm text-blue-700">Prix marché local</div>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+                <div class="text-xl font-bold text-green-600 capitalize">{{ estimation.market_analysis.demand_level }}</div>
+                <div class="text-sm text-green-700">Niveau de demande</div>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <div class="text-xl font-bold text-purple-600 capitalize">{{ estimation.market_analysis.market_trend }}</div>
+                <div class="text-sm text-purple-700">Tendance marché</div>
+            </div>
+        </div>
+        
+        {% if estimation.market_analysis.insights %}
+        <div class="mt-4 p-4 bg-mocha-50 rounded-lg">
+            <h4 class="font-medium text-mocha-800 mb-2">💡 Recommandations marché</h4>
+            <ul class="text-sm text-mocha-700 space-y-1">
+                {% for insight in estimation.market_analysis.insights %}
+                <li>• {{ insight }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Potentiel de rénovation AskElena -->
+    {% if estimation.renovation_potential %}
+    <div class="bg-gradient-to-r from-gold-50 to-mocha-50 border border-gold-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-mocha-900 mb-4">🏗️ Potentiel de valorisation AskElena</h3>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="font-medium text-mocha-800 mb-3">Scénario actuel</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Loyer estimé</span>
+                        <span>{{ "{:,}".format(estimation.estimated_rent|int).replace(',', ' ') }}€/mois</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Rendement net</span>
+                        <span>{{ "%.1f"|format(estimation.net_yield) }}%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-medium text-mocha-800 mb-3">Après rénovation AskElena</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Loyer potentiel</span>
+                        <span class="font-semibold text-gold-600">{{ "{:,}".format(estimation.renovation_potential.optimized_rent|int).replace(',', ' ') }}€/mois</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Rendement net (50/50)</span>
+                        <span class="font-semibold text-gold-600">{{ "%.1f"|format(estimation.renovation_potential.partnership_yield) }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 p-4 bg-white rounded-lg border border-gold-200">
+            <h4 class="font-medium text-mocha-800 mb-2">🤝 Notre partenariat 50/50</h4>
+            <div class="text-sm text-mocha-700 space-y-1">
+                <p>• <strong>Préfinancement:</strong> AskElena avance {{ "{:,}".format(estimation.renovation_potential.estimated_cost|int).replace(',', ' ') }}€ de travaux</p>
+                <p>• <strong>Partage:</strong> 50% des revenus pour vous après remboursement des travaux</p>
+                <p>• <strong>Gain mensuel:</strong> +{{ "{:,}".format((estimation.renovation_potential.optimized_rent * 0.5 - estimation.estimated_rent)|int).replace(',', ' ') }}€/mois à terme</p>
+                <p>• <strong>ROI:</strong> {{ "%.0f"|format(estimation.renovation_potential.partnership_roi) }}% annuel sur votre apport</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Risques et recommandations -->
+    <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-mocha-900 mb-4">⚠️ Points d'attention</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="font-medium text-red-700 mb-3">Risques identifiés</h4>
+                <ul class="text-sm text-mocha-700 space-y-2">
+                    {% for risk in estimation.risks %}
+                    <li class="flex items-start space-x-2">
+                        <span class="text-red-500 mt-1">•</span>
+                        <span>{{ risk }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-medium text-green-700 mb-3">Recommandations</h4>
+                <ul class="text-sm text-mocha-700 space-y-2">
+                    {% for recommendation in estimation.recommendations %}
+                    <li class="flex items-start space-x-2">
+                        <span class="text-green-500 mt-1">•</span>
+                        <span>{{ recommendation }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="bg-gradient-to-r from-mocha-900 to-mocha-800 text-white rounded-xl p-8 text-center">
+        <h3 class="text-xl font-semibold mb-4">🎯 Prochaines étapes</h3>
+        <p class="mb-6 text-mocha-100">
+            Nos experts AskElena vont analyser votre projet en détail et vous recontacter sous 48h 
+            avec une proposition personnalisée.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('estimation.download_pdf', estimation_id=estimation.id) }}" 
+               class="bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                📄 Télécharger le rapport PDF
+            </a>
+            
+            <a href="tel:+33123456789" 
+               class="bg-white text-mocha-900 hover:bg-mocha-50 px-6 py-3 rounded-lg font-semibold transition-colors">
+                📞 Nous appeler maintenant
+            </a>
+            
+            <a href="{{ url_for('index') }}" 
+               class="border border-white text-white hover:bg-white hover:text-mocha-900 px-6 py-3 rounded-lg font-semibold transition-colors">
+                🏠 Retour à l'accueil
+            </a>
+        </div>
+    </div>
+
+    <!-- Nouvelle estimation -->
+    <div class="text-center">
+        <a href="{{ url_for('estimation.start') }}" 
+           class="inline-flex items-center text-gold-600 hover:text-gold-800 font-medium">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Faire une nouvelle estimation
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des métriques au chargement
+    const metrics = document.querySelectorAll('[class*="text-2xl font-bold"]');
+    
+    metrics.forEach((metric, index) => {
+        metric.style.opacity = '0';
+        metric.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            metric.style.transition = 'all 0.6s ease-out';
+            metric.style.opacity = '1';
+            metric.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+    
+    // Tracking pour analytics
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'estimation_completed', {
+            'event_category': 'engagement',
+            'event_label': 'estimation_wizard',
+            'value': 1
+        });
+    }
+    
+    // Partage social (optionnel)
+    function shareEstimation() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Mon estimation locative AskElena',
+                text: 'Découvrez le potentiel de votre investissement immobilier',
+                url: window.location.href
+            });
+        }
+    }
+    
+    // Impression du rapport
+    function printReport() {
+        window.print();
+    }
+    
+    // Exposer les fonctions globalement si nécessaire
+    window.shareEstimation = shareEstimation;
+    window.printReport = printReport;
+});
+</script>
+{% endblock %}

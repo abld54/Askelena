@@ -1,0 +1,278 @@
+{% extends "estimation/base_estimation.html" %}
+
+{% block estimation_title %}Décrivez votre propriété{% endblock %}
+{% block estimation_subtitle %}Étape 1/3 - Informations sur votre bien immobilier{% endblock %}
+
+{% block estimation_content %}
+<form method="POST" class="space-y-6">
+    {{ form.hidden_tag() }}
+    
+    <div class="grid md:grid-cols-1 gap-6">
+        
+        <!-- Adresse -->
+        <div>
+            <label for="{{ form.address.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                {{ form.address.label.text }}
+                <span class="text-red-500">*</span>
+            </label>
+            {{ form.address(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent transition-all", id="address-input") }}
+            {% if form.address.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.address.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div id="address-suggestions" class="hidden mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"></div>
+            <p class="mt-1 text-sm text-mocha-600">
+                💡 Saisissez l'adresse complète pour une estimation précise
+            </p>
+        </div>
+
+        <!-- Type de bien et Surface -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.property_type.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.property_type.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                {{ form.property_type(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent") }}
+                {% if form.property_type.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.property_type.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.surface.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.surface.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                {{ form.surface(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent") }}
+                {% if form.surface.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.surface.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Nombre de pièces et État -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.rooms.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.rooms.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                {{ form.rooms(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent") }}
+                {% if form.rooms.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.rooms.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.condition.id }}" class="block text-sm font-medium text-mocha-900 mb-2">
+                    {{ form.condition.label.text }}
+                    <span class="text-red-500">*</span>
+                </label>
+                {{ form.condition(class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gold-400 focus:border-transparent") }}
+                {% if form.condition.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.condition.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Aperçu marché (si disponible) -->
+    <div id="market-preview" class="hidden mt-6 p-4 bg-gold-50 border border-gold-200 rounded-lg">
+        <h3 class="font-semibold text-mocha-900 mb-2">📊 Aperçu du marché local</h3>
+        <div id="market-data" class="text-sm text-mocha-700">
+            <!-- Données injectées via JavaScript -->
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div class="text-sm text-mocha-600">
+            <span class="font-medium">Étape 1</span> sur 3
+        </div>
+        
+        <button type="submit" 
+                class="bg-gradient-to-r from-gold-500 to-gold-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                id="next-button">
+            Continuer vers l'étape financière
+            <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addressInput = document.getElementById('address-input');
+    const suggestionsDiv = document.getElementById('address-suggestions');
+    const marketPreview = document.getElementById('market-preview');
+    const marketData = document.getElementById('market-data');
+    
+    let debounceTimer;
+    
+    // Autocomplete adresse via API BAN
+    addressInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        clearTimeout(debounceTimer);
+        
+        if (query.length < 3) {
+            suggestionsDiv.classList.add('hidden');
+            return;
+        }
+        
+        debounceTimer = setTimeout(() => {
+            fetchAddressSuggestions(query);
+        }, 300);
+    });
+    
+    function fetchAddressSuggestions(query) {
+        fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`)
+            .then(response => response.json())
+            .then(data => {
+                displayAddressSuggestions(data.features || []);
+            })
+            .catch(error => {
+                console.error('Erreur autocomplete:', error);
+                suggestionsDiv.classList.add('hidden');
+            });
+    }
+    
+    function displayAddressSuggestions(features) {
+        if (features.length === 0) {
+            suggestionsDiv.classList.add('hidden');
+            return;
+        }
+        
+        const html = features.map(feature => {
+            const props = feature.properties;
+            return `
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" 
+                     data-address="${props.label}"
+                     data-lat="${feature.geometry.coordinates[1]}"
+                     data-lon="${feature.geometry.coordinates[0]}">
+                    <div class="font-medium text-mocha-900">${props.label}</div>
+                    <div class="text-sm text-mocha-600">${props.context || ''}</div>
+                </div>
+            `;
+        }).join('');
+        
+        suggestionsDiv.innerHTML = html;
+        suggestionsDiv.classList.remove('hidden');
+        
+        // Gérer les clics sur les suggestions
+        suggestionsDiv.querySelectorAll('[data-address]').forEach(item => {
+            item.addEventListener('click', function() {
+                const address = this.dataset.address;
+                const lat = this.dataset.lat;
+                const lon = this.dataset.lon;
+                
+                addressInput.value = address;
+                suggestionsDiv.classList.add('hidden');
+                
+                // Récupérer les données de marché
+                fetchMarketData(address, lat, lon);
+            });
+        });
+    }
+    
+    function fetchMarketData(address, lat, lon) {
+        const propertyType = document.querySelector('[name="property_type"]').value;
+        
+        if (!propertyType) return;
+        
+        fetch(`{{ url_for('estimation.api_market_data') }}?address=${encodeURIComponent(address)}&property_type=${propertyType}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayMarketData(data);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur données marché:', error);
+            });
+    }
+    
+    function displayMarketData(data) {
+        const html = `
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <div class="font-semibold text-gold-600">${data.average_rent_per_m2}€/m²</div>
+                    <div class="text-xs">Loyer moyen</div>
+                </div>
+                <div>
+                    <div class="font-semibold text-gold-600">${data.zone.charAt(0).toUpperCase() + data.zone.slice(1)}</div>
+                    <div class="text-xs">Zone détectée</div>
+                </div>
+                <div>
+                    <div class="font-semibold text-gold-600">${Math.round(data.confidence * 100)}%</div>
+                    <div class="text-xs">Fiabilité</div>
+                </div>
+            </div>
+            ${data.insights ? `
+                <div class="mt-3 text-xs">
+                    <strong>Recommandation:</strong> ${data.insights.best_rental_type}
+                </div>
+            ` : ''}
+        `;
+        
+        marketData.innerHTML = html;
+        marketPreview.classList.remove('hidden');
+    }
+    
+    // Cacher les suggestions en cliquant ailleurs
+    document.addEventListener('click', function(e) {
+        if (!addressInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+            suggestionsDiv.classList.add('hidden');
+        }
+    });
+    
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    const nextButton = document.getElementById('next-button');
+    
+    function validateForm() {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+            }
+        });
+        
+        nextButton.disabled = !isValid;
+    }
+    
+    // Validation en temps réel
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+    
+    // Validation initiale
+    validateForm();
+});
+</script>
+{% endblock %}
