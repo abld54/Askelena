@@ -9,7 +9,7 @@
     <!-- Open Graph -->
     <meta property="og:title" content="{% block og_title %}AskElena - Conciergerie haut de gamme{% endblock %}">
     <meta property="og:description" content="{% block og_description %}La conciergerie pensée pour les propriétaires exigeants{% endblock %}">
-    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/favicon.svg') }}">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:type" content="website">
     
@@ -17,7 +17,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}AskElena - Conciergerie haut de gamme{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Transformez vos biens en revenus sans contraintes{% endblock %}">
-    <meta name="twitter:image" content="{{ url_for('static', filename='images/twitter-card.jpg') }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/favicon.svg') }}">
     
     <!-- JSON-LD Schema -->
     <script type="application/ld+json">
@@ -45,10 +45,10 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-    <link rel="alternate icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="alternate icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -97,7 +97,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     
     <!-- Lava Icons -->
-    <script src="https://unpkg.com/@lava-icons/core@1.0.0/dist/lava-icons.js"></script>
+    <script src="https://unpkg.com/@lava-icons/core@1.0.0/dist/lava-icons.js" defer></script>
     
     {% block extra_head %}{% endblock %}
 </head>
