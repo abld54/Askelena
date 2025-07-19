@@ -7,8 +7,31 @@ import json
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 
+# Configuration de sécurité HTTPS pour la production
+if os.environ.get('FLASK_ENV') == 'production' or not os.environ.get('FLASK_ENV'):
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['PREFERRED_URL_SCHEME'] = 'https'
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
+else:
+    # Configuration pour le développement local
+    app.config['SESSION_COOKIE_SECURE'] = False
+
 # Register blueprints
 app.register_blueprint(estimation_bp, url_prefix='/estimation')
+
+# En-têtes de sécurité pour HTTPS
+@app.after_request
+def add_security_headers(response):
+    """Ajouter des en-têtes de sécurité pour HTTPS"""
+    if os.environ.get('FLASK_ENV') == 'production' or not os.environ.get('FLASK_ENV'):
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
 
 # Middleware pour les redirections HTTPS et suppression du préfixe www
 @app.before_request
