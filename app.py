@@ -1,10 +1,49 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import os
+from blueprints.estimation import estimation_bp
 from datetime import datetime
 import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
+
+# Register blueprints
+app.register_blueprint(estimation_bp, url_prefix='/estimation')
+
+# Middleware pour les redirections HTTPS et suppression du préfixe www
+@app.before_request
+def force_https_and_no_www():
+    """Force HTTPS et redirige www.askelena.fr vers askelena.fr"""
+    
+    # Récupérer l'URL complète de la requête
+    url = request.url
+    host = request.host.lower()
+    scheme = request.scheme
+    
+    # Vérifier si on est en production (pas en développement local)
+    is_production = not (host.startswith('localhost') or host.startswith('127.0.0.1'))
+    
+    if is_production:
+        redirect_needed = False
+        new_url = url
+        
+        # 1. Redirection HTTP vers HTTPS
+        if scheme == 'http':
+            new_url = new_url.replace('http://', 'https://', 1)
+            redirect_needed = True
+        
+        # 2. Redirection www.askelena.fr vers askelena.fr
+        if host.startswith('www.'):
+            new_host = host[4:]  # Supprimer 'www.'
+            new_url = new_url.replace(f'://{host}', f'://{new_host}', 1)
+            redirect_needed = True
+        
+        # Effectuer la redirection si nécessaire
+        if redirect_needed:
+            return redirect(new_url, code=301)  # Redirection permanente
+    
+    # Pas de redirection nécessaire
+    return None
 
 @app.route('/')
 def index():
@@ -69,18 +108,18 @@ def contact():
     if request.method == 'POST':
         # Traitement du formulaire de contact
         return jsonify({'status': 'success', 'message': 'Message envoyé avec succès!'})
-    return render_template('contact.html')
+    # Rediriger vers la page principale avec l'ancre contact
+    return redirect('/#contact')
 
 @app.route('/blog')
 def blog():
-    # Pour l'instant, retourne une page vide - sera connecté à Supabase plus tard
-    posts = []
-    return render_template('blog.html', posts=posts)
+    # Pour l'instant, rediriger vers la page principale - sera connecté à Supabase plus tard
+    return redirect('/')
 
 @app.route('/blog/<slug>')
 def blog_post(slug):
-    # Sera connecté à Supabase plus tard
-    return render_template('blog_post.html', post={})
+    # Pour l'instant, rediriger vers la page principale - sera connecté à Supabase plus tard
+    return redirect('/')
 
 # Service pages routes
 @app.route('/services/travaux-design')
