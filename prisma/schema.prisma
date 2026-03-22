@@ -95,7 +95,8 @@ model Listing {
   bookings     Booking[]
   reviews      Review[]
   images       Image[]
-  blockedDates BlockedDate[]
+  blockedDates  BlockedDate[]
+  calendarSyncs CalendarSync[]
 }
 
 model Booking {
@@ -150,8 +151,25 @@ model BlockedDate {
   id        String   @id @default(cuid())
   listingId String
   date      DateTime
+  source    String   @default("manual") // "manual" | "airbnb" | "booking" | "sync"
 
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@unique([listingId, date])
+}
+
+model CalendarSync {
+  id          String    @id @default(cuid())
+  listingId   String
+  platform    String    // "airbnb" | "booking" | "other"
+  icalUrl     String    // External iCal URL to import from
+  lastSyncAt  DateTime?
+  lastError   String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, icalUrl])
 }
