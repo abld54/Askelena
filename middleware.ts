@@ -1,22 +1,22 @@
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 // Routes that require authentication
 const protectedRoutes = ["/profile", "/dashboard", "/listings/new", "/listings/edit"];
 
 // Routes only for hosts
-const hostOnlyRoutes = ["/listings/new", "/listings/edit", "/dashboard/listings"];
+const hostOnlyRoutes = ["/listings/new", "/listings/edit", "/dashboard/listings", "/dashboard"];
 
 // Auth pages — redirect away if already logged in
 const authRoutes = ["/login", "/signup"];
 
 export async function middleware(request: NextRequest) {
-  const session = await auth();
+  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
   const { pathname } = request.nextUrl;
 
-  const isAuthenticated = !!session?.user;
-  const userRole = session?.user?.role ?? "guest";
+  const isAuthenticated = !!token;
+  const userRole = (token?.role as string) ?? "guest";
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && authRoutes.some((r) => pathname.startsWith(r))) {
@@ -42,13 +42,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico, sitemap.xml, robots.txt
-     * - public files (images, etc.)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|public/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|public/|api/).*)",
   ],
 };
