@@ -1,27 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { label: "Découvrir", href: "#categories" },
-  { label: "Péniches", href: "#peiniches" },
-  { label: "Châteaux", href: "#chateaux" },
-  { label: "Comment ça marche", href: "#how-it-works" },
+  { label: "L'experience", href: "#about" },
+  { label: "Tarifs", href: "#booking" },
+  { label: "Avis", href: "#reviews" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0F2044]/95 backdrop-blur-sm border-b border-white/10">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-[#0F2044]/98 backdrop-blur-md shadow-lg"
+          : "bg-transparent"
+      }`}
+    >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <span
-              className="text-2xl font-heading font-semibold text-white tracking-wide"
+              className="text-2xl font-semibold text-white tracking-wide"
               style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Askelena
@@ -30,31 +45,26 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.label}
                 href={link.href}
-                className="text-white/80 hover:text-[#C9A84C] text-sm font-medium transition-colors duration-200"
+                className="text-white/70 hover:text-[#C9A84C] text-sm font-medium tracking-wide transition-colors duration-300"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="text-white/80 hover:text-white hover:bg-white/10 text-sm"
+          <div className="hidden md:flex items-center">
+            <a
+              href="#booking"
+              className="bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold text-sm px-6 py-2.5 rounded-lg transition-colors duration-300"
             >
-              Connexion
-            </Button>
-            <Button
-              className="bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold text-sm px-5"
-            >
-              Réserver
-            </Button>
+              Reserver
+            </a>
           </div>
 
           {/* Mobile hamburger */}
@@ -65,46 +75,52 @@ export function Navbar() {
           >
             <div className="w-6 flex flex-col gap-1.5">
               <span
-                className={`block h-0.5 bg-white transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
+                className={`block h-0.5 bg-white transition-all duration-300 ${
+                  menuOpen ? "rotate-45 translate-y-2" : ""
+                }`}
               />
               <span
-                className={`block h-0.5 bg-white transition-all duration-200 ${menuOpen ? "opacity-0" : ""}`}
+                className={`block h-0.5 bg-white transition-all duration-300 ${
+                  menuOpen ? "opacity-0" : ""
+                }`}
               />
               <span
-                className={`block h-0.5 bg-white transition-all duration-200 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
+                className={`block h-0.5 bg-white transition-all duration-300 ${
+                  menuOpen ? "-rotate-45 -translate-y-2" : ""
+                }`}
               />
             </div>
           </button>
         </div>
 
         {/* Mobile menu */}
-        {menuOpen && (
-          <div className="md:hidden py-4 border-t border-white/10">
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ${
+            menuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="py-4 border-t border-white/10">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <Link
+                <a
                   key={link.label}
                   href={link.href}
-                  className="text-white/80 hover:text-[#C9A84C] text-sm font-medium transition-colors duration-200 px-1"
+                  className="text-white/70 hover:text-[#C9A84C] text-sm font-medium tracking-wide transition-colors duration-300 px-1"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
-              <div className="flex gap-3 pt-2">
-                <Button
-                  variant="ghost"
-                  className="text-white/80 hover:text-white hover:bg-white/10 text-sm flex-1"
-                >
-                  Connexion
-                </Button>
-                <Button className="bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold text-sm flex-1">
-                  Réserver
-                </Button>
-              </div>
+              <a
+                href="#booking"
+                className="bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold text-sm px-6 py-2.5 rounded-lg transition-colors duration-300 text-center mt-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                Reserver
+              </a>
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
