@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: askelena
+    runtime: node
+    plan: free
+    buildCommand: pnpm install && pnpm next build
+    startCommand: pnpm next start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
