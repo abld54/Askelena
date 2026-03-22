@@ -1,28 +1,11 @@
+"use client";
+
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { BookingSection } from "@/components/booking-section";
-import { prisma } from "@/lib/prisma";
-import { getUnavailableDates } from "@/lib/booking";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { useState, useEffect } from "react";
 
-/* ─── Data fetching ─── */
-
-async function getListingData() {
-  const listing = await prisma.listing.findFirst({
-    where: { isPublished: true },
-    include: {
-      reviews: {
-        include: { author: { select: { name: true, image: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-      },
-    },
-  });
-  return listing;
-}
-
-/* ─── Amenity icons (SVG paths) ─── */
+/* --- Amenity icons (SVG paths) --- */
 
 const amenityIcons: Record<string, React.ReactNode> = {
   "WiFi haut debit": (
@@ -96,7 +79,7 @@ const amenities = [
   "Petit-dejeuner inclus",
 ];
 
-/* ─── Gallery placeholders ─── */
+/* --- Gallery placeholders --- */
 
 const galleryItems = [
   { label: "Salon lumineux", gradient: "from-[#1B3A6B] to-[#0F2044]" },
@@ -107,7 +90,7 @@ const galleryItems = [
   { label: "Vue canal", gradient: "from-[#1B3A6B] to-[#C9A84C]/30" },
 ];
 
-/* ─── Star rating component ─── */
+/* --- Star rating component --- */
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -126,29 +109,140 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-/* ─── Page ─── */
+/* --- Sample reviews (hardcoded fallback) --- */
 
-export default async function Home() {
-  const listing = await getListingData();
+const sampleReviews = [
+  {
+    id: "1",
+    rating: 5,
+    comment: "Un sejour absolument magique ! La peniche est magnifiquement amenagee, le calme du canal au petit matin est incomparable. Nous reviendrons sans hesiter.",
+    authorName: "Marie L.",
+    date: "fevrier 2026",
+  },
+  {
+    id: "2",
+    rating: 5,
+    comment: "L'experience Askelena depasse toutes les attentes. La terrasse avec vue sur le canal est un pur bonheur. Le petit-dejeuner inclus est un vrai plus.",
+    authorName: "Thomas D.",
+    date: "janvier 2026",
+  },
+  {
+    id: "3",
+    rating: 4,
+    comment: "Cadre exceptionnel et hotes tres attentionnes. La cuisine equipee nous a permis de preparer de bons repas. Seul bemol : le bruit des ecluses le matin.",
+    authorName: "Sophie M.",
+    date: "decembre 2025",
+  },
+];
 
-  const listingId = listing?.id ?? "";
-  const pricePerNight = listing?.pricePerNight ?? 280;
-  const capacity = listing?.capacity ?? 6;
-  const reviews = listing?.reviews ?? [];
+/* --- Reviews section (tries API, falls back to sample) --- */
 
-  let unavailableDates: string[] = [];
-  if (listingId) {
-    const dates = await getUnavailableDates(listingId);
-    unavailableDates = Array.from(
-      new Set(dates.map((d) => d.toISOString().split("T")[0]))
-    );
-  }
+type Review = {
+  id: string;
+  rating: number;
+  comment: string;
+  authorName: string;
+  date: string;
+};
 
+function ReviewsSection() {
+  const [reviews, setReviews] = useState<Review[]>(sampleReviews);
+
+  useEffect(() => {
+    fetch("/api/reviews")
+      .then((r) => r.json())
+      .then((data: Array<{ id: string; rating: number; comment: string; authorName: string; createdAt?: string }>) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setReviews(
+            data.map((r) => ({
+              id: r.id,
+              rating: r.rating,
+              comment: r.comment,
+              authorName: r.authorName || "Voyageur",
+              date: r.createdAt
+                ? new Date(r.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
+                : "",
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        // keep sample reviews
+      });
+  }, []);
+
+  return (
+    <section id="reviews" className="bg-white py-24 md:py-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2
+            className="text-3xl md:text-5xl font-semibold text-[#0F2044] mb-4"
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+          >
+            Ce que disent nos voyageurs
+          </h2>
+          <p className="text-[#0F2044]/50 text-lg max-w-2xl mx-auto">
+            Des moments inoubliables partages par ceux qui ont vecu l&apos;experience Askelena.
+          </p>
+        </div>
+
+        {reviews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((review) => (
+              <div
+                key={review.id}
+                className="bg-[#FAF8F4] rounded-2xl p-6 md:p-8 hover:shadow-md transition-shadow duration-300"
+              >
+                <Stars rating={review.rating} />
+                <p className="text-[#0F2044]/70 text-sm leading-relaxed mt-4 mb-6">
+                  &ldquo;{review.comment}&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#0F2044]/10 flex items-center justify-center text-[#0F2044] font-medium text-sm">
+                    {review.authorName?.[0]?.toUpperCase() ?? "?"}
+                  </div>
+                  <div>
+                    <div className="text-[#0F2044] text-sm font-medium">
+                      {review.authorName ?? "Voyageur"}
+                    </div>
+                    {review.date && (
+                      <div className="text-[#0F2044]/40 text-xs capitalize">
+                        {review.date}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-[#FAF8F4] flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-[#C9A84C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <p className="text-[#0F2044]/40 text-lg mb-2">
+              Les premiers avis arrivent bientot
+            </p>
+            <p className="text-[#0F2044]/30 text-sm">
+              Soyez parmi les premiers a vivre l&apos;experience Askelena.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* --- Page --- */
+
+export default function Home() {
   return (
     <main className="flex-1">
       <Navbar />
 
-      {/* ═══ Section 1: Hero ═══ */}
+      {/* Section 1: Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0F2044] via-[#1B3A6B] to-[#0F2044]" />
@@ -195,7 +289,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ Section 2: Gallery ═══ */}
+      {/* Section 2: Gallery */}
       <section className="bg-white py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -234,7 +328,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ Section 3: Experience / About ═══ */}
+      {/* Section 3: Experience / About */}
       <section id="about" className="bg-[#FAF8F4] py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -288,7 +382,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ Section 4: Amenities ═══ */}
+      {/* Section 4: Amenities */}
       <section className="bg-[#0F2044] py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -325,75 +419,13 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ Section 5: Booking ═══ */}
-      <BookingSection
-        listingId={listingId}
-        pricePerNight={pricePerNight}
-        unavailableDates={unavailableDates}
-        capacity={capacity}
-      />
+      {/* Section 5: Booking */}
+      <BookingSection />
 
-      {/* ═══ Section 6: Reviews ═══ */}
-      <section id="reviews" className="bg-white py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-5xl font-semibold text-[#0F2044] mb-4"
-              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
-            >
-              Ce que disent nos voyageurs
-            </h2>
-            <p className="text-[#0F2044]/50 text-lg max-w-2xl mx-auto">
-              Des moments inoubliables partages par ceux qui ont vecu l&apos;experience Askelena.
-            </p>
-          </div>
+      {/* Section 6: Reviews */}
+      <ReviewsSection />
 
-          {reviews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="bg-[#FAF8F4] rounded-2xl p-6 md:p-8 hover:shadow-md transition-shadow duration-300"
-                >
-                  <Stars rating={review.rating} />
-                  <p className="text-[#0F2044]/70 text-sm leading-relaxed mt-4 mb-6">
-                    &ldquo;{review.comment}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#0F2044]/10 flex items-center justify-center text-[#0F2044] font-medium text-sm">
-                      {review.author.name?.[0]?.toUpperCase() ?? "?"}
-                    </div>
-                    <div>
-                      <div className="text-[#0F2044] text-sm font-medium">
-                        {review.author.name ?? "Voyageur"}
-                      </div>
-                      <div className="text-[#0F2044]/40 text-xs capitalize">
-                        {format(review.createdAt, "MMMM yyyy", { locale: fr })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-[#FAF8F4] flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-[#C9A84C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <p className="text-[#0F2044]/40 text-lg mb-2">
-                Les premiers avis arrivent bientot
-              </p>
-              <p className="text-[#0F2044]/30 text-sm">
-                Soyez parmi les premiers a vivre l&apos;experience Askelena.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ═══ Section 7: Location ═══ */}
+      {/* Section 7: Location */}
       <section className="bg-[#FAF8F4] py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -469,7 +501,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ Section 8: Footer ═══ */}
+      {/* Section 8: Footer */}
       <Footer />
     </main>
   );

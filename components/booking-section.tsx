@@ -19,19 +19,14 @@ import { fr } from "date-fns/locale";
 
 type PricingMode = "nuit" | "semaine" | "mois";
 
-type Props = {
-  listingId: string;
-  pricePerNight: number;
-  unavailableDates: string[];
-  capacity: number;
-};
-
+const DEFAULT_PRICE_PER_NIGHT = 280;
+const DEFAULT_CAPACITY = 6;
 const SERVICE_FEE_RATE = 0.10;
 
 const PRICING: Record<PricingMode, { nights: number; pricePerNight: number; label: string; desc: string }> = {
   nuit: { nights: 1, pricePerNight: 280, label: "Nuit", desc: "A partir de 1 nuit" },
-  semaine: { nights: 7, pricePerNight: 240, label: "Semaine", desc: "7 nuits — economisez 280\u20AC" },
-  mois: { nights: 30, pricePerNight: 187, label: "Mois", desc: "30 nuits — economisez 2 800\u20AC" },
+  semaine: { nights: 7, pricePerNight: 240, label: "Semaine", desc: "7 nuits \u2014 economisez 280\u20AC" },
+  mois: { nights: 30, pricePerNight: 187, label: "Mois", desc: "30 nuits \u2014 economisez 2 800\u20AC" },
 };
 
 function CalendarMonth({
@@ -124,7 +119,7 @@ function CalendarMonth({
   );
 }
 
-export function BookingSection({ listingId, pricePerNight, unavailableDates, capacity }: Props) {
+export function BookingSection() {
   const [mode, setMode] = useState<PricingMode>("nuit");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -132,9 +127,44 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
   const [currentMonth, setCurrentMonth] = useState(startOfMonth(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
+
+  // Client-side fetched data
+  const [listingId, setListingId] = useState<string>("");
+  const [pricePerNight, setPricePerNight] = useState(DEFAULT_PRICE_PER_NIGHT);
+  const [capacity, setCapacity] = useState(DEFAULT_CAPACITY);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
 
   const today = useMemo(() => startOfDay(new Date()), []);
   const nextMonth = addMonths(currentMonth, 1);
+
+  // Fetch listing info on mount
+  useEffect(() => {
+    fetch("/api/listing")
+      .then((r) => r.json())
+      .then((data: { id?: string; pricePerNight?: number; capacity?: number }) => {
+        if (data.id) setListingId(data.id);
+        if (data.pricePerNight) setPricePerNight(data.pricePerNight);
+        if (data.capacity) setCapacity(data.capacity);
+      })
+      .catch(() => {
+        // keep defaults
+      });
+  }, []);
+
+  // Fetch unavailable dates on mount
+  useEffect(() => {
+    fetch("/api/availability")
+      .then((r) => r.json())
+      .then((data: string[]) => {
+        if (Array.isArray(data)) {
+          setUnavailableDates(data);
+        }
+      })
+      .catch(() => {
+        // keep empty
+      });
+  }, []);
 
   const unavailableSet = useMemo(
     () => new Set(unavailableDates),
@@ -169,6 +199,7 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
         }
       }
       setError(null);
+      setConfirmationMessage(null);
     },
     [startDate, endDate, mode]
   );
@@ -207,30 +238,35 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
     }
     setIsSubmitting(true);
     setError(null);
+    setConfirmationMessage(null);
 
     try {
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          listingId,
+          listingId: listingId || "default",
           startDate: format(startDate, "yyyy-MM-dd"),
           endDate: format(endDate, "yyyy-MM-dd"),
+          guests,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 401) {
-          setError("Veuillez vous connecter pour reserver.");
-        } else {
-          setError(data.error || "Une erreur est survenue.");
-        }
+        setError(data.error || "Une erreur est survenue.");
         return;
       }
 
-      if (data.checkoutUrl) {
+      if (data.success) {
+        setConfirmationMessage(
+          data.message || "Demande de reservation recue. Nous vous contacterons sous 24h."
+        );
+        // Reset selection
+        setStartDate(null);
+        setEndDate(null);
+      } else if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
       }
     } catch {
@@ -296,7 +332,7 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
 
         {/* Calendar + Booking form */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 max-w-6xl mx-auto">
-          {/* Calendar — 3 cols */}
+          {/* Calendar -- 3 cols */}
           <div className="lg:col-span-3 bg-white rounded-3xl p-6 md:p-8 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <button
@@ -367,7 +403,7 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
             )}
           </div>
 
-          {/* Booking summary — 2 cols */}
+          {/* Booking summary -- 2 cols */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm sticky top-28">
               <h3
@@ -439,6 +475,18 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
                 </div>
               )}
 
+              {/* Confirmation message */}
+              {confirmationMessage && (
+                <div className="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-green-500 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <p>{confirmationMessage}</p>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-600 text-sm">
                   {error}
@@ -455,7 +503,7 @@ export function BookingSection({ listingId, pricePerNight, unavailableDates, cap
               </button>
 
               <p className="text-center text-xs text-[#0F2044]/40 mt-4">
-                Paiement securise par Stripe. Vous ne serez pas debite immediatement.
+                Vous recevrez une confirmation par email sous 24h.
               </p>
             </div>
           </div>

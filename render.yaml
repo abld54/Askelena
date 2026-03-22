@@ -1,27 +1,26 @@
 services:
   - type: web
     name: askelena
-    runtime: node
+    runtime: python
     plan: free
-    nodeVersion: "20"
-    buildCommand: corepack enable && pnpm install && npx prisma db push --accept-data-loss && pnpm run build && npx tsx prisma/seed.ts
-    startCommand: node node_modules/next/dist/bin/next start -H 0.0.0.0
+    buildCommand: |
+      curl -fsSL https://get.pnpm.io/install.sh | sh -
+      export PATH="$HOME/.local/share/pnpm:$PATH"
+      pnpm install
+      npx prisma generate
+      npx prisma db push --accept-data-loss
+      pnpm run build
+      npx tsx prisma/seed.ts
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: DATABASE_URL
         value: file:./dev.db
       - key: ASKELENA_DATABASE_URL
         value: file:./dev.db
-      - key: AUTH_SECRET
-        generateValue: true
-      - key: NEXT_PUBLIC_APP_URL
-        sync: false
-      - key: STRIPE_SECRET_KEY
-        value: sk_test_REPLACE_ME
-      - key: STRIPE_PUBLISHABLE_KEY
-        value: pk_test_REPLACE_ME
-      - key: STRIPE_WEBHOOK_SECRET
-        value: whsec_REPLACE_ME
-      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-        value: pk_test_REPLACE_ME
+      - key: NODE_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: NODE_VERSION
+        value: "20.18.0"
