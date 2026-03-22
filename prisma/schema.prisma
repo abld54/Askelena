@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─────────────────────────────────────────────
+// Auth models (NextAuth)
+// ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("guest") // "guest" | "host"
+  bio           String?
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts        Account[]
+  sessions        Session[]
+  listings        Listing[]
+  bookingsAsGuest Booking[] @relation("GuestBookings")
+  reviewsWritten  Review[]  @relation("AuthorReviews")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─────────────────────────────────────────────
+// Core domain models
+// ─────────────────────────────────────────────
+
+model Listing {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  type          String   // "peniche" | "chateau" | "villa" | "treehouse" | "other"
+  location      String   // city/region
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  pricePerNight Float
+  capacity      Int
+  hostId        String
+  amenities     String   @default("[]") // JSON array stored as string
+  isPublished   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  host         User          @relation(fields: [hostId], references: [id])
+  bookings     Booking[]
+  reviews      Review[]
+  images       Image[]
+  blockedDates BlockedDate[]
+}
+
+model Booking {
+  id                    String    @id @default(cuid())
+  listingId             String
+  guestId               String
+  startDate             DateTime
+  endDate               DateTime
+  nights                Int
+  totalPrice            Float
+  status                String    @default("pending") // "pending" | "confirmed" | "cancelled" | "completed"
+  stripeSessionId       String?   @unique
+  stripePaymentIntentId String?
+  guestEmail            String
+  guestName             String
+  specialRequests       String?
+  cancelledAt           DateTime?
+  confirmedAt           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  listing Listing @relation(fields: [listingId], references: [id])
+  guest   User    @relation("GuestBookings", fields: [guestId], references: [id])
+  review  Review?
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  listingId String
+  bookingId String   @unique
+  authorId  String
+  rating    Int      // 1–5
+  comment   String
+  createdAt DateTime @default(now())
+
+  listing Listing @relation(fields: [listingId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
+  author  User    @relation("AuthorReviews", fields: [authorId], references: [id])
+}
+
+model Image {
+  id        String @id @default(cuid())
+  url       String
+  alt       String @default("")
+  order     Int    @default(0)
+  listingId String
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model BlockedDate {
+  id        String   @id @default(cuid())
+  listingId String
+  date      DateTime
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, date])
+}
