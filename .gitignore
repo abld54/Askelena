@@ -15,7 +15,6 @@
 
 # next.js
 /.next/
-/out/
 
 # production
 /build
@@ -40,10 +39,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/lib/generated/prisma
-
-# SQLite dev databases
-*.db
+# Keep dev.db for Render (no build step for Node)
 *.db-journal
 *.db-shm
 *.db-wal
