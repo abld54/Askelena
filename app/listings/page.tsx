@@ -26,15 +26,49 @@ export default async function ListingsPage({
 
   const type = typeof params.type === "string" ? params.type : undefined;
   const city = typeof params.city === "string" ? params.city : undefined;
+  const checkIn = typeof params.checkIn === "string" ? params.checkIn : undefined;
+  const checkOut = typeof params.checkOut === "string" ? params.checkOut : undefined;
   const minPrice = typeof params.minPrice === "string" ? params.minPrice : undefined;
   const maxPrice = typeof params.maxPrice === "string" ? params.maxPrice : undefined;
   const capacity = typeof params.capacity === "string" ? params.capacity : undefined;
   const pageParam = typeof params.page === "string" ? params.page : "1";
   const page = Math.max(1, parseInt(pageParam, 10) || 1);
 
+  // Resolve unavailable listing IDs when dates are provided
+  let unavailableIds: string[] = [];
+  if (checkIn && checkOut) {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    if (checkInDate < checkOutDate) {
+      const [conflictingBookings, blockedDates] = await Promise.all([
+        prisma.booking.findMany({
+          where: {
+            status: { in: ["confirmed", "pending"] },
+            startDate: { lt: checkOutDate },
+            endDate: { gt: checkInDate },
+          },
+          select: { listingId: true },
+        }),
+        prisma.blockedDate.findMany({
+          where: {
+            date: { gte: checkInDate, lt: checkOutDate },
+          },
+          select: { listingId: true },
+        }),
+      ]);
+      unavailableIds = [
+        ...new Set([
+          ...conflictingBookings.map((b) => b.listingId),
+          ...blockedDates.map((d) => d.listingId),
+        ]),
+      ];
+    }
+  }
+
   // Build where clause
   const where = {
     isPublished: true,
+    ...(unavailableIds.length > 0 && { id: { notIn: unavailableIds } }),
     ...(type && { type }),
     ...(city && { location: { contains: city } }),
     ...(minPrice && { pricePerNight: { gte: parseFloat(minPrice) } }),
@@ -93,7 +127,7 @@ export default async function ListingsPage({
     }));
 
   // Count active filters for badge
-  const filterCount = [type, city, minPrice, maxPrice, capacity].filter(Boolean).length;
+  const filterCount = [type, city, checkIn, checkOut, minPrice, maxPrice, capacity].filter(Boolean).length;
 
   return (
     <>
@@ -125,6 +159,8 @@ export default async function ListingsPage({
                   <Filters
                     currentType={type}
                     currentCity={city}
+                    currentCheckIn={checkIn}
+                    currentCheckOut={checkOut}
                     currentMinPrice={minPrice}
                     currentMaxPrice={maxPrice}
                     currentCapacity={capacity}

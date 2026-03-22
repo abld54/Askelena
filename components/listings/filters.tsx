@@ -19,6 +19,8 @@ const LISTING_TYPES = [
 type FiltersProps = {
   currentType?: string;
   currentCity?: string;
+  currentCheckIn?: string;
+  currentCheckOut?: string;
   currentMinPrice?: string;
   currentMaxPrice?: string;
   currentCapacity?: string;
@@ -27,6 +29,8 @@ type FiltersProps = {
 export function Filters({
   currentType,
   currentCity,
+  currentCheckIn,
+  currentCheckOut,
   currentMinPrice,
   currentMaxPrice,
   currentCapacity,
@@ -63,7 +67,7 @@ export function Filters({
   }, [router, startTransition]);
 
   const hasFilters =
-    currentType || currentCity || currentMinPrice || currentMaxPrice || currentCapacity;
+    currentType || currentCity || currentCheckIn || currentCheckOut || currentMinPrice || currentMaxPrice || currentCapacity;
 
   return (
     <div className="space-y-6">
@@ -109,6 +113,51 @@ export function Filters({
               }
             }}
           />
+        </div>
+      </div>
+
+      {/* Dates */}
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          Dates de disponibilité
+        </label>
+        <div className="space-y-2">
+          <div>
+            <label className="block text-[10px] text-gray-400 mb-1">Arrivée</label>
+            <Input
+              type="date"
+              defaultValue={currentCheckIn ?? ""}
+              min={new Date().toISOString().split("T")[0]}
+              className="h-9 text-sm"
+              onChange={(e) => {
+                const value = e.target.value;
+                // If check-out is before new check-in, clear it
+                const updates: Record<string, string | undefined> = { checkIn: value || undefined };
+                if (currentCheckOut && value && currentCheckOut <= value) {
+                  updates.checkOut = undefined;
+                }
+                updateParams(updates);
+              }}
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] text-gray-400 mb-1">Départ</label>
+            <Input
+              type="date"
+              defaultValue={currentCheckOut ?? ""}
+              min={currentCheckIn
+                ? (() => {
+                    const d = new Date(currentCheckIn);
+                    d.setDate(d.getDate() + 1);
+                    return d.toISOString().split("T")[0];
+                  })()
+                : new Date().toISOString().split("T")[0]}
+              className="h-9 text-sm"
+              onChange={(e) => {
+                updateParams({ checkOut: e.target.value || undefined });
+              }}
+            />
+          </div>
         </div>
       </div>
 
