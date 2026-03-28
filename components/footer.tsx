@@ -49,8 +49,8 @@ export function Footer() {
               <span className="text-[#C9A84C] text-xl">✦</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs mb-6">
-              Votre escapade flottante d&apos;exception sur le Canal
-              Saint-Martin, au coeur de Paris.
+              Conciergerie de luxe — Paris &amp; Hauts-de-Seine.
+              Des biens d&apos;exception pour des sejours inoubliables.
             </p>
             {/* Social */}
             <div className="flex gap-3">
@@ -74,28 +74,36 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a
-                  href="#about"
+                <Link
+                  href="/peniche"
                   className="text-white/50 hover:text-white text-sm transition-colors duration-200"
                 >
-                  L&apos;experience
-                </a>
+                  La Peniche — Neuilly-sur-Seine
+                </Link>
               </li>
               <li>
-                <a
-                  href="#booking"
+                <Link
+                  href="/appartement"
                   className="text-white/50 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Tarifs et reservation
-                </a>
+                  L&apos;Appartement — Courbevoie
+                </Link>
               </li>
               <li>
-                <a
-                  href="#reviews"
+                <Link
+                  href="/#services"
+                  className="text-white/50 hover:text-white text-sm transition-colors duration-200"
+                >
+                  Services conciergerie
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#reviews"
                   className="text-white/50 hover:text-white text-sm transition-colors duration-200"
                 >
                   Avis
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
