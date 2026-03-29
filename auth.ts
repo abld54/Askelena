@@ -59,7 +59,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as { role?: string }).role ?? "guest";
+        // Auto-promote anaelb90@gmail.com to host
+        const AUTO_ADMIN_EMAILS = ["anaelb90@gmail.com"];
+        if (user.email && AUTO_ADMIN_EMAILS.includes(user.email)) {
+          await prisma.user.update({
+            where: { id: user.id! },
+            data: { role: "host" },
+          });
+          token.role = "host";
+        } else {
+          token.role = (user as { role?: string }).role ?? "guest";
+        }
       }
       return token;
     },
