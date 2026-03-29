@@ -142,11 +142,11 @@ def signout():
 # ─────────────────────────────────────────────
 # Static files (Next.js export)
 # ─────────────────────────────────────────────
-@app.route('/')
+@app.route('/', methods=['GET', 'HEAD'])
 def index():
     return send_from_directory('out', 'index.html')
 
-@app.route('/<path:path>')
+@app.route('/<path:path>', methods=['GET', 'HEAD'])
 def static_files(path):
     """Serve static files, fallback to index.html for client-side routing."""
     # Don't intercept API routes
