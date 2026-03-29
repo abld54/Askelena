@@ -435,12 +435,13 @@ def calendar_sync(listing_id):
 
     # Upsert CalendarSync record
     now = datetime.utcnow().isoformat()
-    existing = db.execute('SELECT id FROM CalendarSync WHERE listingId = ? AND url = ?', (listing_id, ical_url)).fetchone()
+    existing = db.execute('SELECT id FROM CalendarSync WHERE listingId = ? AND icalUrl = ?', (listing_id, ical_url)).fetchone()
     if existing:
-        db.execute('UPDATE CalendarSync SET lastSyncAt = ? WHERE id = ?', (now, existing['id']))
+        db.execute('UPDATE CalendarSync SET lastSyncAt = ?, updatedAt = ? WHERE id = ?', (now, now, existing['id']))
     else:
         sync_id = uuid.uuid4().hex[:25]
-        db.execute('INSERT INTO CalendarSync (id, listingId, url, lastSyncAt) VALUES (?, ?, ?, ?)', (sync_id, listing_id, ical_url, now))
+        db.execute('INSERT INTO CalendarSync (id, listingId, platform, icalUrl, lastSyncAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
+                   (sync_id, listing_id, 'external', ical_url, now, now))
     db.commit()
     db.close()
 
@@ -631,10 +632,11 @@ def admin_add_calendar_sync(lid):
             return jsonify({'error': 'url requis'}), 400
         sync_id = secrets.token_urlsafe(16)
         now = datetime.utcnow().isoformat()
+        platform = data.get('platform', 'external')
         db = get_db()
         db.execute(
-            'INSERT INTO CalendarSync (id, listingId, url, lastSyncAt) VALUES (?, ?, ?, ?)',
-            (sync_id, lid, data['url'], now)
+            'INSERT INTO CalendarSync (id, listingId, platform, icalUrl, updatedAt) VALUES (?, ?, ?, ?, ?)',
+            (sync_id, lid, platform, data['url'], now)
         )
         db.commit()
         sync = dict(db.execute('SELECT * FROM CalendarSync WHERE id = ?', (sync_id,)).fetchone())
