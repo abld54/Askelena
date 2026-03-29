@@ -146,7 +146,7 @@ export default function AdminListings() {
                       <td className="px-6 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            href={`/admin/listings/${l.id}/edit`}
+                            href={`/admin/listings/edit?id=${l.id}`}
                             className="inline-flex items-center gap-1 text-[#0F2044] hover:text-[#C9A84C] text-xs font-medium transition-colors"
                           >
                             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
