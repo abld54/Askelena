@@ -80,6 +80,9 @@ export default function EditClient() {
   const [newBlockedDate, setNewBlockedDate] = useState("");
 
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState("");
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -261,6 +264,35 @@ export default function EditClient() {
     } catch {
       // silently fail
     }
+  }
+
+  async function syncIcalUrl() {
+    if (!newIcalUrl) return;
+    setSyncing(true);
+    setSyncResult("");
+    try {
+      const res = await fetch(`/api/calendar/sync/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: newIcalUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur de synchronisation");
+      setSyncResult(`Synchronise : ${data.eventsFound} evenements, ${data.datesBlocked} dates bloquees`);
+      setNewIcalUrl("");
+      setTimeout(() => setSyncResult(""), 5000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur de synchronisation");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  function copyExportUrl() {
+    const url = `${window.location.origin}/api/calendar/export/${id}`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   if (loading) {
@@ -467,6 +499,56 @@ export default function EditClient() {
             </select>
             <input type="url" value={newIcalUrl} onChange={(e) => setNewIcalUrl(e.target.value)} placeholder="URL iCal" className={`flex-1 ${inputClass}`} />
             <button type="button" onClick={addCalendarSync} className="bg-[#0F2044] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1B3A6B] transition-colors whitespace-nowrap">Ajouter</button>
+          </div>
+        </div>
+
+        {/* Calendriers externes */}
+        <div className="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-[#0F2044]/5">
+          <h2 className="text-lg font-semibold text-[#0F2044] mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>Calendriers externes</h2>
+
+          {/* Export iCal */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-[#0F2044]/70 mb-2">Lien d&apos;export iCal (a partager avec Airbnb, Booking...)</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={typeof window !== "undefined" ? `${window.location.origin}/api/calendar/export/${id}` : `/api/calendar/export/${id}`}
+                className={`flex-1 ${inputClass} bg-[#FAF8F4] text-[#0F2044]/60`}
+              />
+              <button
+                type="button"
+                onClick={copyExportUrl}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${copied ? "bg-green-600 text-white" : "bg-[#C9A84C] text-[#0F2044] hover:bg-[#E5C158]"}`}
+              >
+                {copied ? "Copie !" : "Copier"}
+              </button>
+            </div>
+          </div>
+
+          {/* Import iCal Airbnb */}
+          <div>
+            <label className="block text-sm font-medium text-[#0F2044]/70 mb-2">Importer un calendrier iCal (Airbnb, Booking...)</label>
+            {syncResult && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-lg mb-3 text-sm">{syncResult}</div>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={newIcalUrl}
+                onChange={(e) => setNewIcalUrl(e.target.value)}
+                placeholder="https://www.airbnb.fr/calendar/ical/..."
+                className={`flex-1 ${inputClass}`}
+              />
+              <button
+                type="button"
+                onClick={syncIcalUrl}
+                disabled={syncing || !newIcalUrl}
+                className="bg-[#0F2044] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1B3A6B] transition-colors whitespace-nowrap disabled:opacity-50"
+              >
+                {syncing ? "Synchronisation..." : "Synchroniser"}
+              </button>
+            </div>
           </div>
         </div>
       </main>
