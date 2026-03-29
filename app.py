@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import sqlite3
 import secrets
 import hashlib
@@ -48,6 +49,15 @@ def init_db():
         url TEXT,
         lastSyncAt TEXT
     )''')
+    # Add columns that may not exist yet
+    for stmt in [
+        'ALTER TABLE Listing ADD COLUMN airbnbUrl TEXT DEFAULT ""',
+        'ALTER TABLE Booking ADD COLUMN guests INTEGER DEFAULT 1',
+    ]:
+        try:
+            db.execute(stmt)
+        except Exception:
+            pass
     db.commit()
     db.close()
 
@@ -224,21 +234,66 @@ def get_reviews():
     except Exception:
         return jsonify([])
 
-@app.route('/api/bookings', methods=['POST'])
-def create_booking():
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'Donnees requises'}), 400
+@app.route('/api/bookings', methods=['GET', 'POST'])
+def bookings_public():
+    if request.method == 'POST':
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Donnees requises'}), 400
+        try:
+            bid = secrets.token_urlsafe(16)
+            now = datetime.utcnow().isoformat()
+            start = data.get('startDate', '')
+            end = data.get('endDate', '')
+            # Calculate nights
+            try:
+                d1 = datetime.fromisoformat(start[:10])
+                d2 = datetime.fromisoformat(end[:10])
+                nights = (d2 - d1).days
+            except Exception:
+                nights = 0
+            guest_email = data.get('guestEmail', '')
+            guest_name = data.get('guestName', '')
+            # Find or create guest user
+            db = get_db()
+            user = db.execute('SELECT id FROM User WHERE email = ?', (guest_email,)).fetchone()
+            if user:
+                guest_id = user['id']
+            else:
+                guest_id = secrets.token_urlsafe(16)
+                db.execute(
+                    'INSERT INTO User (id, email, name, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
+                    (guest_id, guest_email, guest_name, 'guest', now, now)
+                )
+            db.execute(
+                '''INSERT INTO Booking (id, listingId, guestId, startDate, endDate, nights, totalPrice, status, guestEmail, guestName, guests, createdAt, updatedAt)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (bid, data.get('listingId', ''), guest_id, start, end, nights,
+                 data.get('totalPrice', 0), 'pending', guest_email, guest_name,
+                 data.get('guests', 1), now, now)
+            )
+            db.commit()
+            booking = dict(db.execute('SELECT * FROM Booking WHERE id = ?', (bid,)).fetchone())
+            db.close()
+            return jsonify(booking), 201
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
-    return jsonify({
-        'success': True,
-        'message': 'Demande de reservation recue. Nous vous contacterons sous 24h.',
-        'booking': {
-            'startDate': data.get('startDate'),
-            'endDate': data.get('endDate'),
-            'guests': data.get('guests', 1),
-        }
-    })
+    # GET — filter by userId or guestEmail
+    try:
+        db = get_db()
+        user_id = request.args.get('userId')
+        guest_email = request.args.get('guestEmail')
+        if user_id:
+            rows = db.execute('SELECT * FROM Booking WHERE guestId = ? ORDER BY createdAt DESC', (user_id,)).fetchall()
+        elif guest_email:
+            rows = db.execute('SELECT * FROM Booking WHERE guestEmail = ? ORDER BY createdAt DESC', (guest_email,)).fetchall()
+        else:
+            rows = db.execute('SELECT * FROM Booking ORDER BY createdAt DESC').fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
 
 # ─────────────────────────────────────────────
 # Messagerie host/guest
@@ -398,6 +453,464 @@ def admin_calendar_syncs(listing_id):
     rows = db.execute('SELECT * FROM CalendarSync WHERE listingId = ? ORDER BY lastSyncAt DESC', (listing_id,)).fetchall()
     db.close()
     return jsonify([dict(r) for r in rows])
+
+
+# ─────────────────────────────────────────────
+# Admin Listings CRUD
+# ─────────────────────────────────────────────
+@app.route('/api/admin/listings', methods=['GET'])
+def admin_list_listings():
+    try:
+        db = get_db()
+        rows = db.execute('SELECT * FROM Listing ORDER BY createdAt DESC').fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/admin/listings', methods=['POST'])
+def admin_create_listing():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Données requises'}), 400
+        lid = secrets.token_urlsafe(16)
+        now = datetime.utcnow().isoformat()
+        db = get_db()
+        db.execute(
+            '''INSERT INTO Listing (id, title, description, type, location, address, latitude, longitude,
+            pricePerNight, capacity, amenities, airbnbUrl, isPublished, hostId, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (lid, data.get('title', ''), data.get('description', ''), data.get('type', 'other'),
+             data.get('location', ''), data.get('address', ''), data.get('latitude'), data.get('longitude'),
+             data.get('pricePerNight', 0), data.get('capacity', 1), json.dumps(data.get('amenities', [])),
+             data.get('airbnbUrl', ''), 1 if data.get('isPublished') else 0,
+             data.get('hostId', session.get('user', {}).get('id', '')), now, now)
+        )
+        db.commit()
+        listing = dict(db.execute('SELECT * FROM Listing WHERE id = ?', (lid,)).fetchone())
+        db.close()
+        return jsonify(listing), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/listings/<lid>', methods=['GET'])
+def admin_get_listing(lid):
+    try:
+        db = get_db()
+        listing = db.execute('SELECT * FROM Listing WHERE id = ?', (lid,)).fetchone()
+        if not listing:
+            db.close()
+            return jsonify({'error': 'Not found'}), 404
+        result = dict(listing)
+        # Include images
+        images = db.execute('SELECT * FROM Image WHERE listingId = ? ORDER BY "order" ASC', (lid,)).fetchall()
+        result['images'] = [dict(img) for img in images]
+        db.close()
+        return jsonify(result)
+    except Exception:
+        return jsonify({}), 500
+
+
+@app.route('/api/admin/listings/<lid>', methods=['PATCH'])
+def admin_update_listing(lid):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Données requises'}), 400
+        fields = ['title', 'description', 'type', 'location', 'address', 'latitude', 'longitude',
+                  'pricePerNight', 'capacity', 'amenities', 'airbnbUrl', 'isPublished']
+        updates = []
+        values = []
+        for f in fields:
+            if f in data:
+                val = data[f]
+                if f == 'amenities' and isinstance(val, list):
+                    val = json.dumps(val)
+                if f == 'isPublished':
+                    val = 1 if val else 0
+                updates.append(f'{f} = ?')
+                values.append(val)
+        if not updates:
+            return jsonify({'error': 'Rien à mettre à jour'}), 400
+        updates.append('updatedAt = ?')
+        values.append(datetime.utcnow().isoformat())
+        values.append(lid)
+        db = get_db()
+        db.execute(f'UPDATE Listing SET {", ".join(updates)} WHERE id = ?', values)
+        db.commit()
+        listing = dict(db.execute('SELECT * FROM Listing WHERE id = ?', (lid,)).fetchone())
+        db.close()
+        return jsonify(listing)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/listings/<lid>', methods=['DELETE'])
+def admin_delete_listing(lid):
+    try:
+        db = get_db()
+        db.execute('DELETE FROM Image WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM BlockedDate WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM CalendarSync WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM Listing WHERE id = ?', (lid,))
+        db.commit()
+        db.close()
+        return jsonify({'success': True})
+    except Exception:
+        return jsonify({'error': 'Erreur suppression'}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Listings Images
+# ─────────────────────────────────────────────
+@app.route('/api/admin/listings/<lid>/images', methods=['GET'])
+def admin_list_images(lid):
+    try:
+        db = get_db()
+        rows = db.execute('SELECT * FROM Image WHERE listingId = ? ORDER BY "order" ASC', (lid,)).fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/admin/listings/<lid>/images', methods=['POST'])
+def admin_add_image(lid):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Données requises'}), 400
+        img_id = secrets.token_urlsafe(16)
+        db = get_db()
+        db.execute(
+            'INSERT INTO Image (id, listingId, url, alt, "order") VALUES (?, ?, ?, ?, ?)',
+            (img_id, lid, data.get('url', ''), data.get('alt', ''), data.get('order', 0))
+        )
+        db.commit()
+        img = dict(db.execute('SELECT * FROM Image WHERE id = ?', (img_id,)).fetchone())
+        db.close()
+        return jsonify(img), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/listings/<lid>/images/<image_id>', methods=['DELETE'])
+def admin_delete_image(lid, image_id):
+    try:
+        db = get_db()
+        db.execute('DELETE FROM Image WHERE id = ? AND listingId = ?', (image_id, lid))
+        db.commit()
+        db.close()
+        return jsonify({'success': True})
+    except Exception:
+        return jsonify({'error': 'Erreur suppression'}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Listings Calendar Syncs
+# ─────────────────────────────────────────────
+@app.route('/api/admin/listings/<lid>/calendar-syncs', methods=['GET'])
+def admin_listing_calendar_syncs(lid):
+    try:
+        db = get_db()
+        rows = db.execute('SELECT * FROM CalendarSync WHERE listingId = ? ORDER BY lastSyncAt DESC', (lid,)).fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/admin/listings/<lid>/calendar-syncs', methods=['POST'])
+def admin_add_calendar_sync(lid):
+    try:
+        data = request.get_json()
+        if not data or not data.get('url'):
+            return jsonify({'error': 'url requis'}), 400
+        sync_id = secrets.token_urlsafe(16)
+        now = datetime.utcnow().isoformat()
+        db = get_db()
+        db.execute(
+            'INSERT INTO CalendarSync (id, listingId, url, lastSyncAt) VALUES (?, ?, ?, ?)',
+            (sync_id, lid, data['url'], now)
+        )
+        db.commit()
+        sync = dict(db.execute('SELECT * FROM CalendarSync WHERE id = ?', (sync_id,)).fetchone())
+        db.close()
+        return jsonify(sync), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/listings/<lid>/calendar-syncs/<sync_id>', methods=['DELETE'])
+def admin_delete_calendar_sync(lid, sync_id):
+    try:
+        db = get_db()
+        db.execute('DELETE FROM CalendarSync WHERE id = ? AND listingId = ?', (sync_id, lid))
+        db.commit()
+        db.close()
+        return jsonify({'success': True})
+    except Exception:
+        return jsonify({'error': 'Erreur suppression'}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Listings Blocked Dates
+# ─────────────────────────────────────────────
+@app.route('/api/admin/listings/<lid>/blocked-dates', methods=['GET'])
+def admin_list_blocked_dates(lid):
+    try:
+        db = get_db()
+        rows = db.execute('SELECT * FROM BlockedDate WHERE listingId = ? ORDER BY date ASC', (lid,)).fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/admin/listings/<lid>/blocked-dates', methods=['POST'])
+def admin_add_blocked_date(lid):
+    try:
+        data = request.get_json()
+        if not data or not data.get('date'):
+            return jsonify({'error': 'date requis'}), 400
+        bd_id = secrets.token_urlsafe(16)
+        db = get_db()
+        db.execute(
+            'INSERT OR IGNORE INTO BlockedDate (id, listingId, date, source) VALUES (?, ?, ?, ?)',
+            (bd_id, lid, data['date'], data.get('source', 'manual'))
+        )
+        db.commit()
+        bd = db.execute('SELECT * FROM BlockedDate WHERE id = ?', (bd_id,)).fetchone()
+        db.close()
+        if bd:
+            return jsonify(dict(bd)), 201
+        return jsonify({'success': True, 'id': bd_id}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/listings/<lid>/blocked-dates/<bd_id>', methods=['DELETE'])
+def admin_delete_blocked_date(lid, bd_id):
+    try:
+        db = get_db()
+        db.execute('DELETE FROM BlockedDate WHERE id = ? AND listingId = ?', (bd_id, lid))
+        db.commit()
+        db.close()
+        return jsonify({'success': True})
+    except Exception:
+        return jsonify({'error': 'Erreur suppression'}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Bookings
+# ─────────────────────────────────────────────
+@app.route('/api/admin/bookings', methods=['GET'])
+def admin_list_bookings():
+    try:
+        db = get_db()
+        rows = db.execute(
+            '''SELECT b.*, u.name as guestUserName, u.email as guestUserEmail
+            FROM Booking b
+            LEFT JOIN User u ON b.guestId = u.id
+            ORDER BY b.createdAt DESC'''
+        ).fetchall()
+        db.close()
+        return jsonify([dict(r) for r in rows])
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/admin/bookings/<bid>', methods=['PATCH'])
+def admin_update_booking(bid):
+    try:
+        data = request.get_json()
+        if not data or 'status' not in data:
+            return jsonify({'error': 'status requis'}), 400
+        status = data['status']
+        if status not in ('confirmed', 'cancelled', 'pending', 'completed'):
+            return jsonify({'error': 'Status invalide'}), 400
+        now = datetime.utcnow().isoformat()
+        db = get_db()
+        extra = ''
+        if status == 'confirmed':
+            extra = ', confirmedAt = ?'
+        elif status == 'cancelled':
+            extra = ', cancelledAt = ?'
+        sql = f'UPDATE Booking SET status = ?, updatedAt = ?{extra} WHERE id = ?'
+        params = [status, now]
+        if extra:
+            params.append(now)
+        params.append(bid)
+        db.execute(sql, params)
+        db.commit()
+        booking = db.execute('SELECT * FROM Booking WHERE id = ?', (bid,)).fetchone()
+        db.close()
+        if not booking:
+            return jsonify({'error': 'Not found'}), 404
+        return jsonify(dict(booking))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Dashboard
+# ─────────────────────────────────────────────
+@app.route('/api/admin/dashboard', methods=['GET'])
+def admin_dashboard():
+    try:
+        db = get_db()
+        total_bookings = db.execute('SELECT COUNT(*) as c FROM Booking').fetchone()['c']
+        total_revenue = db.execute("SELECT COALESCE(SUM(totalPrice), 0) as s FROM Booking WHERE status = 'confirmed'").fetchone()['s']
+        pending_bookings = db.execute("SELECT COUNT(*) as c FROM Booking WHERE status = 'pending'").fetchone()['c']
+        # Occupancy: ratio of confirmed booking days to total days in current month
+        now = datetime.utcnow()
+        month_start = now.replace(day=1).strftime('%Y-%m-%d')
+        if now.month == 12:
+            month_end = now.replace(year=now.year + 1, month=1, day=1).strftime('%Y-%m-%d')
+        else:
+            month_end = now.replace(month=now.month + 1, day=1).strftime('%Y-%m-%d')
+        confirmed = db.execute(
+            "SELECT startDate, endDate FROM Booking WHERE status = 'confirmed' AND endDate >= ? AND startDate < ?",
+            (month_start, month_end)
+        ).fetchall()
+        listing_count = db.execute('SELECT COUNT(*) as c FROM Listing').fetchone()['c']
+        days_in_month = (datetime.fromisoformat(month_end) - datetime.fromisoformat(month_start)).days
+        booked_days = 0
+        for b in confirmed:
+            s = max(datetime.fromisoformat(b['startDate'][:10]), datetime.fromisoformat(month_start))
+            e = min(datetime.fromisoformat(b['endDate'][:10]), datetime.fromisoformat(month_end))
+            booked_days += max(0, (e - s).days)
+        total_available = days_in_month * max(listing_count, 1)
+        occupancy_rate = round((booked_days / total_available) * 100, 1) if total_available > 0 else 0
+        recent = db.execute(
+            '''SELECT b.*, u.name as guestUserName
+            FROM Booking b LEFT JOIN User u ON b.guestId = u.id
+            ORDER BY b.createdAt DESC LIMIT 5'''
+        ).fetchall()
+        db.close()
+        return jsonify({
+            'totalBookings': total_bookings,
+            'totalRevenue': total_revenue,
+            'occupancyRate': occupancy_rate,
+            'pendingBookings': pending_bookings,
+            'recentBookings': [dict(r) for r in recent],
+        })
+    except Exception:
+        return jsonify({
+            'totalBookings': 0, 'totalRevenue': 0, 'occupancyRate': 0,
+            'pendingBookings': 0, 'recentBookings': [],
+        })
+
+
+# ─────────────────────────────────────────────
+# Listings publics
+# ─────────────────────────────────────────────
+@app.route('/api/listings', methods=['GET'])
+def public_list_listings():
+    try:
+        db = get_db()
+        rows = db.execute('SELECT * FROM Listing WHERE isPublished = 1 ORDER BY createdAt DESC').fetchall()
+        results = []
+        for r in rows:
+            d = dict(r)
+            images = db.execute('SELECT * FROM Image WHERE listingId = ? ORDER BY "order" ASC', (d['id'],)).fetchall()
+            d['images'] = [dict(img) for img in images]
+            results.append(d)
+        db.close()
+        return jsonify(results)
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/listings/<lid>', methods=['GET'])
+def public_get_listing(lid):
+    try:
+        db = get_db()
+        listing = db.execute('SELECT * FROM Listing WHERE id = ? AND isPublished = 1', (lid,)).fetchone()
+        if not listing:
+            db.close()
+            return jsonify({'error': 'Not found'}), 404
+        result = dict(listing)
+        images = db.execute('SELECT * FROM Image WHERE listingId = ? ORDER BY "order" ASC', (lid,)).fetchall()
+        result['images'] = [dict(img) for img in images]
+        db.close()
+        return jsonify(result)
+    except Exception:
+        return jsonify({}), 500
+
+
+@app.route('/api/listings/<lid>', methods=['DELETE'])
+def public_delete_listing(lid):
+    try:
+        user = session.get('user')
+        if not user:
+            return jsonify({'error': 'Non autorisé'}), 401
+        db = get_db()
+        listing = db.execute('SELECT * FROM Listing WHERE id = ?', (lid,)).fetchone()
+        if not listing:
+            db.close()
+            return jsonify({'error': 'Not found'}), 404
+        if listing['hostId'] != user['id'] and user.get('role') != 'host':
+            db.close()
+            return jsonify({'error': 'Non autorisé'}), 403
+        db.execute('DELETE FROM Image WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM BlockedDate WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM CalendarSync WHERE listingId = ?', (lid,))
+        db.execute('DELETE FROM Listing WHERE id = ?', (lid,))
+        db.commit()
+        db.close()
+        return jsonify({'success': True})
+    except Exception:
+        return jsonify({'error': 'Erreur suppression'}), 500
+
+
+# ─────────────────────────────────────────────
+# Admin Scrape
+# ─────────────────────────────────────────────
+@app.route('/api/admin/scrape', methods=['POST'])
+def admin_scrape():
+    data = request.get_json()
+    if not data or not data.get('url'):
+        return jsonify({'title': '', 'description': '', 'pricePerNight': 0, 'images': []})
+    url = data['url']
+    try:
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        })
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            html = resp.read().decode('utf-8', errors='replace')
+        # Extract og:title
+        title_match = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+        if not title_match:
+            title_match = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:title["\']', html, re.IGNORECASE)
+        title = title_match.group(1) if title_match else ''
+        # Extract og:description
+        desc_match = re.search(r'<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+        if not desc_match:
+            desc_match = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:description["\']', html, re.IGNORECASE)
+        description = desc_match.group(1) if desc_match else ''
+        # Extract price
+        price_match = re.search(r'[\u20ac$€]\s*(\d+)', html)
+        if not price_match:
+            price_match = re.search(r'(\d+)\s*[\u20ac$€]', html)
+        price = int(price_match.group(1)) if price_match else 0
+        # Extract og:image
+        images = []
+        img_matches = re.findall(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+        if not img_matches:
+            img_matches = re.findall(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html, re.IGNORECASE)
+        images = img_matches[:10]
+        return jsonify({
+            'title': title,
+            'description': description,
+            'pricePerNight': price,
+            'images': images,
+        })
+    except Exception:
+        return jsonify({'title': '', 'description': '', 'pricePerNight': 0, 'images': []})
 
 
 if __name__ == '__main__':
