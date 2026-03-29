@@ -146,17 +146,20 @@ def signout():
 def index():
     return send_from_directory('out', 'index.html')
 
-@app.route('/<path:path>', methods=['GET', 'HEAD'])
+@app.route('/<path:path>', methods=['GET', 'HEAD'], strict_slashes=False)
 def static_files(path):
     """Serve static files, fallback to index.html for client-side routing."""
+    # Remove trailing slash if any
+    path = path.rstrip('/')
+
     # Don't intercept API routes
     if path.startswith('api/'):
         return jsonify({'error': 'Not found'}), 404
 
-    file_path = Path('out') / path
     # Check .html first (before checking if directory exists)
     if (Path('out') / f'{path}.html').exists():
         return send_from_directory('out', f'{path}.html')
+    file_path = Path('out') / path
     if file_path.exists() and file_path.is_file():
         return send_from_directory('out', path)
     return send_from_directory('out', 'index.html')
