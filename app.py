@@ -3,8 +3,10 @@ import json
 import sqlite3
 import secrets
 import hashlib
-from datetime import datetime, timedelta
-from flask import Flask, send_from_directory, request, jsonify, redirect, session, url_for
+import uuid
+import urllib.request
+from datetime import datetime, timedelta, date
+from flask import Flask, send_from_directory, request, jsonify, redirect, session, url_for, Response
 from authlib.integrations.flask_client import OAuth
 from pathlib import Path
 from functools import wraps
@@ -27,6 +29,29 @@ google = oauth.register(
 )
 
 AUTO_HOST_EMAILS = ['anaelb90@gmail.com']
+
+def init_db():
+    """Create tables if they don't exist."""
+    db = sqlite3.connect(DB_PATH)
+    db.execute('''CREATE TABLE IF NOT EXISTS Message (
+        id TEXT PRIMARY KEY,
+        bookingId TEXT,
+        senderEmail TEXT,
+        senderName TEXT,
+        content TEXT,
+        isHost INTEGER DEFAULT 0,
+        createdAt TEXT
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS CalendarSync (
+        id TEXT PRIMARY KEY,
+        listingId TEXT,
+        url TEXT,
+        lastSyncAt TEXT
+    )''')
+    db.commit()
+    db.close()
+
+init_db()
 
 def get_db():
     """Get SQLite connection."""
@@ -214,6 +239,166 @@ def create_booking():
             'guests': data.get('guests', 1),
         }
     })
+
+# ─────────────────────────────────────────────
+# Messagerie host/guest
+# ─────────────────────────────────────────────
+@app.route('/api/messages', methods=['GET', 'POST'])
+def messages():
+    if request.method == 'POST':
+        data = request.get_json()
+        if not data or not data.get('bookingId') or not data.get('content'):
+            return jsonify({'error': 'bookingId et content requis'}), 400
+        msg_id = uuid.uuid4().hex[:25]
+        now = datetime.utcnow().isoformat()
+        db = get_db()
+        db.execute(
+            'INSERT INTO Message (id, bookingId, senderEmail, senderName, content, isHost, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (msg_id, data['bookingId'], data.get('senderEmail', ''), data.get('senderName', ''), data['content'], 1 if data.get('isHost') else 0, now)
+        )
+        db.commit()
+        msg = dict(db.execute('SELECT * FROM Message WHERE id = ?', (msg_id,)).fetchone())
+        db.close()
+        return jsonify(msg), 201
+
+    # GET
+    booking_id = request.args.get('bookingId')
+    if not booking_id:
+        return jsonify({'error': 'bookingId requis'}), 400
+    db = get_db()
+    rows = db.execute('SELECT * FROM Message WHERE bookingId = ? ORDER BY createdAt ASC', (booking_id,)).fetchall()
+    db.close()
+    return jsonify([dict(r) for r in rows])
+
+# ─────────────────────────────────────────────
+# iCal export & sync
+# ─────────────────────────────────────────────
+@app.route('/api/calendar/export/<listing_id>')
+def calendar_export(listing_id):
+    db = get_db()
+    bookings = db.execute(
+        "SELECT id, startDate, endDate FROM Booking WHERE listingId = ? AND status = 'confirmed'",
+        (listing_id,)
+    ).fetchall()
+    listing = db.execute('SELECT title FROM Listing WHERE id = ?', (listing_id,)).fetchone()
+    db.close()
+
+    cal_name = listing['title'] if listing else 'Askelena'
+    lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Askelena//Calendar//FR',
+        f'X-WR-CALNAME:{cal_name}',
+    ]
+    for b in bookings:
+        b = dict(b)
+        dtstart = b['startDate'][:10].replace('-', '')
+        dtend = b['endDate'][:10].replace('-', '')
+        lines += [
+            'BEGIN:VEVENT',
+            f'UID:{b["id"]}@askelena',
+            f'DTSTART;VALUE=DATE:{dtstart}',
+            f'DTEND;VALUE=DATE:{dtend}',
+            f'SUMMARY:Reservation Askelena',
+            'STATUS:CONFIRMED',
+            'END:VEVENT',
+        ]
+    lines.append('END:VCALENDAR')
+    ics_content = '\r\n'.join(lines) + '\r\n'
+    return Response(ics_content, mimetype='text/calendar', headers={'Content-Disposition': f'attachment; filename=askelena-{listing_id}.ics'})
+
+
+def parse_ical_events(ics_text):
+    """Parse VEVENT blocks from iCal text, return list of (start_date, end_date) as date objects."""
+    events = []
+    in_event = False
+    dtstart = None
+    dtend = None
+    for line in ics_text.replace('\r\n', '\n').replace('\r', '\n').split('\n'):
+        line = line.strip()
+        if line == 'BEGIN:VEVENT':
+            in_event = True
+            dtstart = dtend = None
+        elif line == 'END:VEVENT':
+            if in_event and dtstart:
+                if not dtend:
+                    dtend = dtstart + timedelta(days=1)
+                events.append((dtstart, dtend))
+            in_event = False
+        elif in_event:
+            if line.startswith('DTSTART'):
+                dtstart = _parse_ical_date(line)
+            elif line.startswith('DTEND'):
+                dtend = _parse_ical_date(line)
+    return events
+
+
+def _parse_ical_date(line):
+    """Extract a date from an iCal DTSTART/DTEND line."""
+    val = line.split(':', 1)[-1].strip()
+    val = val[:8]  # Take YYYYMMDD part
+    try:
+        return date(int(val[:4]), int(val[4:6]), int(val[6:8]))
+    except (ValueError, IndexError):
+        return None
+
+
+@app.route('/api/calendar/sync/<listing_id>', methods=['POST'])
+def calendar_sync(listing_id):
+    data = request.get_json()
+    if not data or not data.get('url'):
+        return jsonify({'error': 'url requis'}), 400
+    ical_url = data['url']
+
+    try:
+        req = urllib.request.Request(ical_url, headers={'User-Agent': 'Askelena/1.0'})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            ics_text = resp.read().decode('utf-8', errors='replace')
+    except Exception as e:
+        return jsonify({'error': f'Impossible de telecharger le calendrier: {e}'}), 400
+
+    events = parse_ical_events(ics_text)
+
+    db = get_db()
+    # Remove old ical-sync blocked dates for this listing from this URL
+    db.execute("DELETE FROM BlockedDate WHERE listingId = ? AND source = 'ical-sync'", (listing_id,))
+    inserted = 0
+    for start_d, end_d in events:
+        current = start_d
+        while current < end_d:
+            date_str = current.strftime('%Y-%m-%d')
+            try:
+                bd_id = uuid.uuid4().hex[:25]
+                db.execute(
+                    'INSERT OR IGNORE INTO BlockedDate (id, listingId, date, source) VALUES (?, ?, ?, ?)',
+                    (bd_id, listing_id, date_str, 'ical-sync')
+                )
+                inserted += 1
+            except Exception:
+                pass
+            current += timedelta(days=1)
+
+    # Upsert CalendarSync record
+    now = datetime.utcnow().isoformat()
+    existing = db.execute('SELECT id FROM CalendarSync WHERE listingId = ? AND url = ?', (listing_id, ical_url)).fetchone()
+    if existing:
+        db.execute('UPDATE CalendarSync SET lastSyncAt = ? WHERE id = ?', (now, existing['id']))
+    else:
+        sync_id = uuid.uuid4().hex[:25]
+        db.execute('INSERT INTO CalendarSync (id, listingId, url, lastSyncAt) VALUES (?, ?, ?, ?)', (sync_id, listing_id, ical_url, now))
+    db.commit()
+    db.close()
+
+    return jsonify({'success': True, 'eventsFound': len(events), 'datesBlocked': inserted})
+
+
+@app.route('/api/admin/calendar-syncs/<listing_id>')
+def admin_calendar_syncs(listing_id):
+    db = get_db()
+    rows = db.execute('SELECT * FROM CalendarSync WHERE listingId = ? ORDER BY lastSyncAt DESC', (listing_id,)).fetchall()
+    db.close()
+    return jsonify([dict(r) for r in rows])
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
