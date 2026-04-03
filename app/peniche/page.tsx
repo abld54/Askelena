@@ -94,9 +94,14 @@ export default function PenichePage() {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0F2044] via-[#1B3A6B] to-[#0F2044]" />
-        <div className="absolute top-1/3 -right-32 w-96 h-96 bg-[#C9A84C]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 -left-32 w-80 h-80 bg-[#C9A84C]/5 rounded-full blur-3xl" />
+        <img
+          src="/peniche-sunset.jpg"
+          alt="La Péniche au coucher du soleil"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#0F2044]/65" />
+        <div className="absolute top-1/3 -right-32 w-96 h-96 bg-[#C9A84C]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 -left-32 w-80 h-80 bg-[#C9A84C]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <span className="inline-block text-[#C9A84C]/70 text-sm tracking-[0.3em] uppercase mb-6">
@@ -283,7 +288,7 @@ export default function PenichePage() {
       </section>
 
       {/* Booking */}
-      <BookingSection listingSlug="listing-peniche-001" />
+      <BookingSection />
 
       {/* Location */}
       <section className="bg-[#FAF8F4] py-24 md:py-32">

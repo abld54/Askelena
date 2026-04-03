@@ -148,6 +148,7 @@ const properties = [
     guests: 6,
     bedrooms: 3,
     href: "/peniche",
+    image: "/peniche-sunset.jpg",
     gradient: "from-[#1B3A6B] via-[#0F2044] to-[#1B3A6B]",
   },
   {
@@ -282,7 +283,7 @@ const trustSignals = [
     ),
   },
   {
-    text: "Paris & banlieue ouest",
+    text: "Paris Ouest & region nicoise",
     icon: (
       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
@@ -290,6 +291,14 @@ const trustSignals = [
       </svg>
     ),
   },
+];
+
+const ownerBenefits = [
+  "Source de revenus additionnels sans engagement rigide.",
+  "Mise aux normes et revalorisation du bien avec soutien financier.",
+  "Gestion complete: location saisonniere, courte duree et bail mobilite.",
+  "Remuneration transparente: pourcentage des revenus locatifs.",
+  "Contrats de 1 a 10 ans avec clauses annuelles de sortie claires.",
 ];
 
 /* --- Page --- */
@@ -301,9 +310,14 @@ export default function Home() {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0F2044] via-[#1B3A6B] to-[#0F2044]" />
-        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-[#C9A84C]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -left-32 w-80 h-80 bg-[#C9A84C]/5 rounded-full blur-3xl" />
+        <img
+          src="/peniche-sunset.jpg"
+          alt="Vue de la péniche au coucher du soleil"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#0F2044]/68" />
+        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-[#C9A84C]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -left-32 w-80 h-80 bg-[#C9A84C]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1
@@ -313,13 +327,13 @@ export default function Home() {
             Askelena
           </h1>
           <p
-            className="text-xl sm:text-2xl text-white/60 mb-4"
+            className="text-xl sm:text-2xl text-white/70 mb-4"
             style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
-            Conciergerie de luxe
+            Conciergerie et gestion locative premium
           </p>
-          <p className="text-white/40 text-base sm:text-lg max-w-xl mx-auto mb-12 leading-relaxed">
-            Paris &amp; Hauts-de-Seine
+          <p className="text-white/45 text-base sm:text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+            Paris Ouest et region nicoise — excellence hoteliere, gestion complete, revenus optimises.
           </p>
           <a
             href="#properties"
@@ -334,6 +348,32 @@ export default function Home() {
           <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
+        </div>
+      </section>
+
+      {/* Notre mission */}
+      <section className="bg-white py-20 md:py-24 border-b border-[#0F2044]/5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2
+              className="text-3xl md:text-5xl font-semibold text-[#0F2044] mb-4"
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+            >
+              Notre mission
+            </h2>
+            <p className="text-[#0F2044]/65 text-base md:text-lg leading-relaxed max-w-4xl mx-auto">
+              Nous aidons les proprietaires a augmenter les revenus de leur residence principale ou secondaire,
+              sans perdre en flexibilite. Askelena associe l'art de vivre a la francaise a l'excellence de service
+              inspiree de la culture philippine, avec une approche axee sur la qualite plutot que la quantite.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            {ownerBenefits.map((item) => (
+              <div key={item} className="bg-[#FAF8F4] rounded-2xl px-5 py-4 text-[#0F2044]/75 text-sm md:text-base">
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -359,9 +399,16 @@ export default function Home() {
                 href={property.href}
                 className="group relative overflow-hidden rounded-3xl border-2 border-[#C9A84C]/20 hover:border-[#C9A84C]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#C9A84C]/10"
               >
-                {/* Gradient placeholder for photo */}
                 <div className={`aspect-[4/3] bg-gradient-to-br ${property.gradient} relative`}>
-                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+                  {property.image ? (
+                    <img
+                      src={property.image}
+                      alt={property.name}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   
                   {/* Property info overlay */}
@@ -494,6 +541,28 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Espace proprietaires */}
+      <section className="bg-[#FAF8F4] py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2
+            className="text-3xl md:text-4xl font-semibold text-[#0F2044] mb-5"
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+          >
+            Vous avez un bien a louer ?
+          </h2>
+          <p className="text-[#0F2044]/65 text-base md:text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
+            Confiez-nous votre bien et beneficiez d'une gestion premium, d'un plan de valorisation
+            et d'un cadre contractuel clair, adapte a votre rythme.
+          </p>
+          <Link
+            href="/louez-nous-vos-biens"
+            className="inline-block bg-[#0F2044] hover:bg-[#1B3A6B] text-white font-semibold px-8 py-3.5 rounded-xl transition-colors duration-300"
+          >
+            Louez-nous vos biens
+          </Link>
         </div>
       </section>
 

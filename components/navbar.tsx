@@ -42,12 +42,14 @@ export function Navbar() {
     ? [
         { label: "Nos biens", href: "/#properties", hasDropdown: true },
         { label: "Services", href: "/#services", hasDropdown: false },
+        { label: "Proprietaires", href: "/louez-nous-vos-biens", hasDropdown: false },
         { label: "Avis", href: "/#reviews", hasDropdown: false },
         { label: "Contact", href: "/#contact", hasDropdown: false },
       ]
     : [
         { label: "Nos biens", href: "#properties", hasDropdown: true },
         { label: "Services", href: "#services", hasDropdown: false },
+        { label: "Proprietaires", href: "/louez-nous-vos-biens", hasDropdown: false },
         { label: "Avis", href: "#reviews", hasDropdown: false },
         { label: "Contact", href: "#contact", hasDropdown: false },
       ];
