@@ -192,35 +192,90 @@ def get_listing():
             'capacity': 6,
         })
 
+# In-memory cache for iCal fetches (avoid hammering external servers)
+_ical_cache = {}  # {url: (timestamp, events)}
+_ICAL_CACHE_TTL = 300  # 5 minutes
+
+def _fetch_ical_cached(url):
+    """Fetch and parse iCal URL with 5-minute cache."""
+    import time
+    now = time.time()
+    if url in _ical_cache:
+        ts, events = _ical_cache[url]
+        if now - ts < _ICAL_CACHE_TTL:
+            return events
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Askelena/1.0'})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            ics_text = resp.read().decode('utf-8', errors='replace')
+        events = parse_ical_events(ics_text)
+        _ical_cache[url] = (now, events)
+        return events
+    except Exception:
+        return []
+
 @app.route('/api/availability')
 def get_availability():
     try:
         db = get_db()
+        listing_row = db.execute('SELECT id FROM Listing WHERE isPublished = 1 LIMIT 1').fetchone()
+        if not listing_row:
+            db.close()
+            return jsonify({'unavailable': [], 'external': []})
+        listing_id = listing_row['id']
+
         blocked = db.execute(
-            'SELECT date FROM BlockedDate WHERE listingId = (SELECT id FROM Listing WHERE isPublished = 1 LIMIT 1)'
+            'SELECT date, source FROM BlockedDate WHERE listingId = ?', (listing_id,)
         ).fetchall()
         bookings = db.execute(
             """SELECT startDate, endDate FROM Booking
-            WHERE listingId = (SELECT id FROM Listing WHERE isPublished = 1 LIMIT 1)
-            AND status IN ('confirmed', 'pending')"""
+            WHERE listingId = ? AND status IN ('confirmed', 'pending')""", (listing_id,)
+        ).fetchall()
+
+        # Fetch active CalendarSync URLs
+        syncs = db.execute(
+            "SELECT icalUrl, platform FROM CalendarSync WHERE listingId = ? AND isActive = 1", (listing_id,)
         ).fetchall()
         db.close()
 
-        dates = set()
+        # Internal unavailable dates (our own bookings + manual blocks)
+        internal_dates = set()
+        external_dates = set()
+
         for row in blocked:
             d = row['date'][:10] if isinstance(row['date'], str) else row['date'].strftime('%Y-%m-%d')
-            dates.add(d)
+            source = row['source'] if row['source'] else 'manual'
+            if source in ('airbnb', 'booking', 'sync', 'ical-sync'):
+                external_dates.add(d)
+            else:
+                internal_dates.add(d)
+
         for booking in bookings:
             start = datetime.fromisoformat(booking['startDate'][:10])
             end = datetime.fromisoformat(booking['endDate'][:10])
             current = start
             while current < end:
-                dates.add(current.strftime('%Y-%m-%d'))
+                internal_dates.add(current.strftime('%Y-%m-%d'))
                 current += timedelta(days=1)
 
-        return jsonify(sorted(list(dates)))
+        # Live-fetch external iCal calendars
+        for sync in syncs:
+            events = _fetch_ical_cached(sync['icalUrl'])
+            for start_d, end_d in events:
+                current = start_d
+                while current < end_d:
+                    external_dates.add(current.strftime('%Y-%m-%d'))
+                    current += timedelta(days=1)
+
+        # External dates that overlap with internal are just internal
+        external_only = external_dates - internal_dates
+
+        return jsonify({
+            'unavailable': sorted(list(internal_dates | external_dates)),
+            'external': sorted(list(external_only)),
+        })
     except Exception:
-        return jsonify([])
+        return jsonify({'unavailable': [], 'external': []})
 
 @app.route('/api/reviews')
 def get_reviews():

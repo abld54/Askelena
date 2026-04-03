@@ -151,7 +151,7 @@ export type BlockedDateGroupByOutputType = {
   _max: BlockedDateMaxAggregateOutputType | null
 }
 
-type GetBlockedDateGroupByPayload<T extends BlockedDateGroupByArgs> = Prisma.PrismaPromise<
+export type GetBlockedDateGroupByPayload<T extends BlockedDateGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BlockedDateGroupByOutputType, T['by']> &
       {

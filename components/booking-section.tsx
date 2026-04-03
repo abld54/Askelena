@@ -32,6 +32,7 @@ const PRICING: Record<PricingMode, { nights: number; pricePerNight: number; labe
 function CalendarMonth({
   month,
   unavailable,
+  external,
   startDate,
   endDate,
   onSelectDate,
@@ -39,6 +40,7 @@ function CalendarMonth({
 }: {
   month: Date;
   unavailable: Set<string>;
+  external: Set<string>;
   startDate: Date | null;
   endDate: Date | null;
   onSelectDate: (d: Date) => void;
@@ -76,6 +78,7 @@ function CalendarMonth({
           const dateStr = format(day, "yyyy-MM-dd");
           const isPast = isBefore(day, today);
           const isUnavailable = unavailable.has(dateStr);
+          const isExternal = external.has(dateStr);
           const disabled = isPast || isUnavailable;
 
           const isStart = startDate && isSameDay(day, startDate);
@@ -89,7 +92,9 @@ function CalendarMonth({
           let className =
             "relative h-10 w-full flex items-center justify-center text-sm rounded-lg transition-all duration-200 ";
 
-          if (disabled) {
+          if (disabled && isExternal && !isPast) {
+            className += "bg-red-50 text-red-400 cursor-not-allowed line-through font-medium";
+          } else if (disabled) {
             className += "text-[#0F2044]/20 cursor-not-allowed line-through";
           } else if (isStart || isEnd) {
             className +=
@@ -134,6 +139,7 @@ export function BookingSection() {
   const [pricePerNight, setPricePerNight] = useState(DEFAULT_PRICE_PER_NIGHT);
   const [capacity, setCapacity] = useState(DEFAULT_CAPACITY);
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
+  const [externalDates, setExternalDates] = useState<string[]>([]);
 
   const today = useMemo(() => startOfDay(new Date()), []);
   const nextMonth = addMonths(currentMonth, 1);
@@ -156,9 +162,14 @@ export function BookingSection() {
   useEffect(() => {
     fetch("/api/availability")
       .then((r) => r.json())
-      .then((data: string[]) => {
+      .then((data: string[] | { unavailable?: string[]; external?: string[] }) => {
         if (Array.isArray(data)) {
+          // Legacy format (flat array)
           setUnavailableDates(data);
+        } else {
+          // New format with external dates
+          setUnavailableDates(data.unavailable || []);
+          setExternalDates(data.external || []);
         }
       })
       .catch(() => {
@@ -169,6 +180,11 @@ export function BookingSection() {
   const unavailableSet = useMemo(
     () => new Set(unavailableDates),
     [unavailableDates]
+  );
+
+  const externalSet = useMemo(
+    () => new Set(externalDates),
+    [externalDates]
   );
 
   const handleSelectDate = useCallback(
@@ -363,6 +379,7 @@ export function BookingSection() {
               <CalendarMonth
                 month={currentMonth}
                 unavailable={unavailableSet}
+                external={externalSet}
                 startDate={startDate}
                 endDate={endDate}
                 onSelectDate={handleSelectDate}
@@ -371,12 +388,31 @@ export function BookingSection() {
               <CalendarMonth
                 month={nextMonth}
                 unavailable={unavailableSet}
+                external={externalSet}
                 startDate={startDate}
                 endDate={endDate}
                 onSelectDate={handleSelectDate}
                 today={today}
               />
             </div>
+
+            {/* Calendar legend */}
+            {externalDates.length > 0 && (
+              <div className="mt-6 pt-4 border-t border-[#0F2044]/10 flex flex-wrap items-center gap-5 text-xs text-[#0F2044]/50">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded bg-red-50 border border-red-200" />
+                  <span>Reserve ailleurs</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded bg-[#0F2044]/5 border border-[#0F2044]/10" />
+                  <span>Indisponible</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded bg-[#C9A84C]" />
+                  <span>Selection</span>
+                </div>
+              </div>
+            )}
 
             {startDate && (
               <div className="mt-6 pt-6 border-t border-[#0F2044]/10 flex flex-wrap items-center gap-4 text-sm">
