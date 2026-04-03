@@ -4,78 +4,57 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { BookingSection } from "@/components/booking-section";
 
-/* --- Amenity icons --- */
+/* --- Equipements --- */
 
-const amenityIcons: Record<string, React.ReactNode> = {
-  "WiFi haut debit": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12.55a11 11 0 0114 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" />
-    </svg>
-  ),
-  "Cuisine equipee": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
-    </svg>
-  ),
-  "Balcon": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-    </svg>
-  ),
-  "Chauffage": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2v10M18.4 6.6a9 9 0 11-12.77.04" />
-    </svg>
-  ),
-  "Lave-linge": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="3" />
-      <circle cx="12" cy="13" r="5" />
-      <path d="M6 6h.01M9 6h.01" />
-    </svg>
-  ),
-  "Lit queen-size": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 4v16M22 4v16M2 12h20M2 8h20M7 12V8M17 12V8" />
-    </svg>
-  ),
-  "Machine a cafe Nespresso": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 8h1a4 4 0 010 8h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8zM6 2v4M10 2v4M14 2v4" />
-    </svg>
-  ),
-  "Parking": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="3" />
-      <path d="M9 17V7h4a3 3 0 010 6H9" />
-    </svg>
-  ),
-  "TV 4K": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="3" width="20" height="14" rx="2" />
-      <path d="M8 21h8M12 17v4" />
-    </svg>
-  ),
-  "Fer a repasser": (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2v10M18.4 6.6a9 9 0 11-12.77.04" />
-    </svg>
-  ),
-};
-
-const amenities = [
-  "Cuisine entiere",
-  "Bouilloire electrique",
-  "Machine a cafe",
-  "Cafe",
-  "Four",
-  "Four a micro-ondes",
-  "Grille-pain",
-  "Refrigerateur",
-  "Plaques de cuisson",
-  "Vaisselle et couverts",
-  "Verres a vin",
-  "Equipements de cuisine de base",
+const amenityGroups = [
+  {
+    title: "Chambre 1",
+    items: [
+      "Lit queen size",
+      "Chauffage",
+      "Cintres",
+      "Linge de lit",
+      "Espace de rangement pour les vetements",
+      "Fer a repasser",
+      "Oreillers et couvertures supplementaires",
+      "Television",
+    ],
+  },
+  {
+    title: "Chambre 2",
+    items: ["Canape-lit", "Linge de lit"],
+  },
+  {
+    title: "Salle de bain",
+    items: [
+      "Chauffage",
+      "Eau chaude",
+      "Gel douche",
+      "Produits de nettoyage",
+      "Seche-cheveux",
+    ],
+  },
+  {
+    title: "Exterieur",
+    items: ["Balcon"],
+  },
+  {
+    title: "Cuisine",
+    items: [
+      "Cuisine entiere",
+      "Bouilloire electrique",
+      "Machine a cafe",
+      "Cafe",
+      "Four",
+      "Four a micro-ondes",
+      "Grille-pain",
+      "Refrigerateur",
+      "Plaques de cuisson",
+      "Vaisselle et couverts",
+      "Verres a vin",
+      "Equipements de cuisine de base",
+    ],
+  },
 ];
 
 const galleryItems = [
@@ -271,19 +250,27 @@ export default function AppartementPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8">
-            {amenities.map((amenity) => (
-              <div key={amenity} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#C9A84C] group-hover:bg-[#C9A84C]/10 group-hover:border-[#C9A84C]/30 transition-all duration-300">
-                  {amenityIcons[amenity] || (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-                <span className="text-white/60 text-xs text-center font-medium leading-tight">
-                  {amenity}
-                </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {amenityGroups.map((group) => (
+              <div key={group.title} className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6">
+                <h3
+                  className="text-[#C9A84C] text-lg font-semibold mb-4"
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+                >
+                  {group.title}
+                </h3>
+                <ul className="space-y-2.5">
+                  {group.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-white/70 text-sm">
+                      <span className="mt-0.5 text-[#C9A84C]">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
