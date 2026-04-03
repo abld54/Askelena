@@ -195,15 +195,44 @@ export default function AppartementPage() {
               </h2>
               <div className="text-[#0F2044]/60 text-base leading-relaxed space-y-4">
                 <p>
-                  Situe a Courbevoie, aux portes de La Defense, L&apos;Appartement est un
-                  ecrin de raffinement moderne. Deux chambres spacieuses, un salon lumineux
-                  et une cuisine entierement equipee composent cet espace elegant.
+                  Ce logement spacieux de 65 m2 offre un sejour calme et confortable avec le luxe d&apos;un jardin.
+                  En rez-de-chaussee sureleve dans une impasse, il beneficie d&apos;une entree separee sur la rue.
+                  Que vous soyez a Paris pour le plaisir ou le travail, vous etes a 10 minutes de La Defense
+                  et 20 minutes du coeur de Paris.
                 </p>
                 <p>
-                  Ideal pour les voyageurs d&apos;affaires comme pour les couples en quete
-                  d&apos;un pied-a-terre parisien haut de gamme. Le balcon offre une vue
-                  degagee sur la ville, tandis que le quartier regorge de restaurants
-                  et de commerces.
+                  This spacious accommodation of 65 m2 offers a quiet and comfortable stay with the luxury of a garden.
+                  On the raised ground floor in a calm cul-de-sac, it benefits from a separate entrance on the street.
+                  Whether you are in Paris for pleasure or work, you are in 10 minutes at La Defense and 20 minutes
+                  in the heart of Paris.
+                </p>
+                <p>
+                  Le logement comprend une cuisine independante et lumineuse toute equipee donnant sur un jardin ensoleille.
+                  Le salon de 30 m2 donne egalement sur le jardin et est equipe d&apos;un canape-lit queen size (2.00 x 1.60 m).
+                  La chambre de 15 m2 est equipee d&apos;un lit queen size (2.00 x 1.60 m), avec un petit bureau et une television
+                  (200 chaines Orange et acces internet fibre optique). La salle de bain independante est equipee d&apos;une large
+                  douche et d&apos;une toilette. L&apos;acces au logement se fait directement depuis la rue, par une porte d&apos;entree situee
+                  a gauche de la porte de l&apos;immeuble.
+                </p>
+                <p>
+                  The accommodation includes a fully equipped independent and bright kitchen overlooking a sunny garden.
+                  The 30 m2 living room also overlooks the garden and is equipped with a queen-size sofa bed (2.00 x 1.60 m).
+                  The 15 m2 bedroom is equipped with a queen-size bed (2.00 x 1.60 m), a small desk and a television
+                  (200 Orange channels and fiber optic internet access). The independent bathroom includes a large shower
+                  and a toilet. The apartment is accessed directly from the street through an entrance door located to the left
+                  of the building entrance.
+                </p>
+                <p>
+                  Les voyageurs peuvent utiliser l&apos;integralite du logement, en veillant a ne plus faire de bruit dans le jardin
+                  et l&apos;appartement apres 22h00. Vous pouvez contacter Elena, et si ce numero ne repond pas, contacter Gilles.
+                  Elena et Gilles parlent couramment francais et anglais. Le logement est raccorde a la fibre optique avec
+                  un Wi-Fi dont le code est donne dans le livret d&apos;accueil.
+                </p>
+                <p>
+                  Guests can use the entire apartment but are required to be quiet after 10:00 pm.
+                  You can contact Elena, and if that number doesn&apos;t answer, contact Gilles.
+                  Elena and Gilles are fluent in French and English.
+                  The apartment is connected to fiber optic internet and the Wi-Fi code is provided in the welcome booklet.
                 </p>
               </div>
             </div>
