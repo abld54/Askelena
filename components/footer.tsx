@@ -180,7 +180,16 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/40 text-xs text-center sm:text-left">
-            &copy; 2026 Askelena. Built by supersocks.co. All rights reserved. Powered by IA for the best experience, but Gilles is real to welcome you when he&apos;s around.
+            &copy; 2026 Askelena. Built by{" "}
+            <Link
+              href="https://supersocks.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#C9A84C] hover:text-[#E5C158] underline underline-offset-2"
+            >
+              ⚿ supersocks.co
+            </Link>
+            . All rights reserved. Powered by IA for the best experience, but Gilles is real to welcome you when he&apos;s around.
           </p>
           <div className="flex items-center gap-6">
             <Link
