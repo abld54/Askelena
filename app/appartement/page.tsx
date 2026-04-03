@@ -280,7 +280,7 @@ export default function AppartementPage() {
       </section>
 
       {/* Booking */}
-      <BookingSection />
+      <BookingSection listingSlug="listing-courbevoie-001" />
 
       {/* Location */}
       <section className="bg-[#FAF8F4] py-24 md:py-32">

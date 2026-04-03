@@ -124,7 +124,7 @@ function CalendarMonth({
   );
 }
 
-export function BookingSection() {
+export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
   const [mode, setMode] = useState<PricingMode>("nuit");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -146,7 +146,8 @@ export function BookingSection() {
 
   // Fetch listing info on mount
   useEffect(() => {
-    fetch("/api/listing")
+    const qs = listingSlug ? `?listing=${listingSlug}` : "";
+    fetch(`/api/listing${qs}`)
       .then((r) => r.json())
       .then((data: { id?: string; pricePerNight?: number; capacity?: number }) => {
         if (data.id) setListingId(data.id);
@@ -156,11 +157,12 @@ export function BookingSection() {
       .catch(() => {
         // keep defaults
       });
-  }, []);
+  }, [listingSlug]);
 
   // Fetch unavailable dates on mount
   useEffect(() => {
-    fetch("/api/availability")
+    const qs = listingSlug ? `?listing=${listingSlug}` : "";
+    fetch(`/api/availability${qs}`)
       .then((r) => r.json())
       .then((data: string[] | { unavailable?: string[]; external?: string[] }) => {
         if (Array.isArray(data)) {
@@ -175,7 +177,7 @@ export function BookingSection() {
       .catch(() => {
         // keep empty
       });
-  }, []);
+  }, [listingSlug]);
 
   const unavailableSet = useMemo(
     () => new Set(unavailableDates),

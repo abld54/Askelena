@@ -172,9 +172,11 @@ def static_files(path):
 def get_listing():
     try:
         db = get_db()
-        listing = db.execute(
-            'SELECT * FROM Listing WHERE isPublished = 1 LIMIT 1'
-        ).fetchone()
+        listing_id_param = request.args.get('listing')
+        if listing_id_param:
+            listing = db.execute('SELECT * FROM Listing WHERE id = ? AND isPublished = 1', (listing_id_param,)).fetchone()
+        else:
+            listing = db.execute('SELECT * FROM Listing WHERE isPublished = 1 LIMIT 1').fetchone()
         db.close()
         if not listing:
             return jsonify({
@@ -218,7 +220,11 @@ def _fetch_ical_cached(url):
 def get_availability():
     try:
         db = get_db()
-        listing_row = db.execute('SELECT id FROM Listing WHERE isPublished = 1 LIMIT 1').fetchone()
+        listing_id_param = request.args.get('listing')
+        if listing_id_param:
+            listing_row = db.execute('SELECT id FROM Listing WHERE id = ? AND isPublished = 1', (listing_id_param,)).fetchone()
+        else:
+            listing_row = db.execute('SELECT id FROM Listing WHERE isPublished = 1 LIMIT 1').fetchone()
         if not listing_row:
             db.close()
             return jsonify({'unavailable': [], 'external': []})
