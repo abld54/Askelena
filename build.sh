@@ -7,7 +7,6 @@ pnpm install
 npx prisma generate
 npx prisma db push --accept-data-loss
 pnpm run build
-npx tsx prisma/seed.ts
 
 # Install Python dependencies
 pip install -r requirements.txt
