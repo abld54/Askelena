@@ -710,6 +710,8 @@ def calendar_sync(listing_id):
     db = get_db()
     # Remove old ical-sync blocked dates only for this specific URL (not all syncs of the listing)
     source_key = f"ical-sync:{hashlib.sha1(ical_url.encode('utf-8')).hexdigest()[:12]}"
+    # Legacy cleanup: old generic source from previous implementation
+    db.execute("DELETE FROM BlockedDate WHERE listingId = ? AND source = 'ical-sync'", (listing_id,))
     db.execute("DELETE FROM BlockedDate WHERE listingId = ? AND source = ?", (listing_id, source_key))
     inserted = 0
     for start_d, end_d in events:
