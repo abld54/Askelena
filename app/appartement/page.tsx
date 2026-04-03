@@ -332,8 +332,8 @@ export default function AppartementPage() {
                     Adresse
                   </h3>
                   <p className="text-[#0F2044]/60 text-sm leading-relaxed mb-6">
-                    Courbevoie<br />
-                    Hauts-de-Seine, France
+                    Adresse approximative :<br />
+                    17 Impasse Michael Winburn
                   </p>
                   <h3
                     className="text-xl font-semibold text-[#0F2044] mb-4"
