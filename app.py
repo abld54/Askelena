@@ -256,7 +256,7 @@ def get_availability():
         for row in blocked:
             d = row['date'][:10] if isinstance(row['date'], str) else row['date'].strftime('%Y-%m-%d')
             source = row['source'] if row['source'] else 'manual'
-            if source in ('airbnb', 'booking', 'sync', 'ical-sync'):
+            if source in ('airbnb', 'booking', 'sync', 'ical-sync') or str(source).startswith('ical-sync:'):
                 external_dates.add(d)
             else:
                 internal_dates.add(d)
@@ -708,8 +708,9 @@ def calendar_sync(listing_id):
     events = parse_ical_events(ics_text)
 
     db = get_db()
-    # Remove old ical-sync blocked dates for this listing from this URL
-    db.execute("DELETE FROM BlockedDate WHERE listingId = ? AND source = 'ical-sync'", (listing_id,))
+    # Remove old ical-sync blocked dates only for this specific URL (not all syncs of the listing)
+    source_key = f"ical-sync:{hashlib.sha1(ical_url.encode('utf-8')).hexdigest()[:12]}"
+    db.execute("DELETE FROM BlockedDate WHERE listingId = ? AND source = ?", (listing_id, source_key))
     inserted = 0
     for start_d, end_d in events:
         current = start_d
@@ -719,7 +720,7 @@ def calendar_sync(listing_id):
                 bd_id = uuid.uuid4().hex[:25]
                 db.execute(
                     'INSERT OR IGNORE INTO BlockedDate (id, listingId, date, source) VALUES (?, ?, ?, ?)',
-                    (bd_id, listing_id, date_str, 'ical-sync')
+                    (bd_id, listing_id, date_str, source_key)
                 )
                 inserted += 1
             except Exception:
