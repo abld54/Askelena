@@ -12,7 +12,7 @@ from authlib.integrations.flask_client import OAuth
 from pathlib import Path
 from functools import wraps
 
-app = Flask(__name__, static_folder='out', static_url_path='')
+app = Flask(__name__, static_folder=None)
 app.secret_key = os.environ.get('NEXTAUTH_SECRET', secrets.token_hex(32))
 
 DB_PATH = os.environ.get('DATABASE_URL', 'file:./dev.db').replace('file:', '').replace('./', '')
