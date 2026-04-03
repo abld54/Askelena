@@ -147,6 +147,9 @@ const properties = [
     description: "Votre escapade flottante d\u2019exception sur la Seine",
     guests: 6,
     bedrooms: 3,
+    rating: "4.9",
+    reviewCount: "32",
+    hosting: "12 mois de partage sur Airbnb, Booking et autres plateformes",
     href: "/peniche",
     image: "/peniche-sunset.jpg",
     gradient: "from-[#1B3A6B] via-[#0F2044] to-[#1B3A6B]",
@@ -157,6 +160,9 @@ const properties = [
     description: "\u00C9l\u00E9gance parisienne aux portes de La D\u00E9fense",
     guests: 4,
     bedrooms: 2,
+    rating: "4.8",
+    reviewCount: "21",
+    hosting: "12 mois de partage sur Airbnb, Booking et autres plateformes",
     href: "/appartement",
     gradient: "from-[#0F2044] via-[#1B3A6B] to-[#0F2044]",
   },
@@ -424,7 +430,14 @@ export default function Home() {
                     >
                       {property.name}
                     </h3>
-                    <p className="text-white/70 text-sm mb-4">{property.description}</p>
+                    <p className="text-white/70 text-sm mb-3">{property.description}</p>
+                    <div className="flex items-center gap-2 text-white/90 text-xs mb-2">
+                      <span>★ {property.rating}</span>
+                      <span className="text-white/50">({property.reviewCount} notes)</span>
+                    </div>
+                    <div className="text-white/60 text-[11px] mb-4">
+                      {property.hosting}
+                    </div>
                     <div className="flex items-center gap-4 text-white/50 text-xs">
                       <span>{property.guests} voyageurs</span>
                       <span className="w-1 h-1 rounded-full bg-white/30" />
