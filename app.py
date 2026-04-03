@@ -1089,6 +1089,74 @@ def admin_dashboard():
             LEFT JOIN Listing l ON b.listingId = l.id
             ORDER BY b.createdAt DESC LIMIT 5'''
         ).fetchall()
+
+        # Calendar sync overview by listing/source for admin visibility
+        listings = db.execute('SELECT id, title FROM Listing ORDER BY createdAt DESC').fetchall()
+        sync_rows = db.execute(
+            '''SELECT id, listingId, platform, icalUrl, lastSyncAt, isActive
+               FROM CalendarSync
+               ORDER BY listingId ASC, createdAt DESC'''
+        ).fetchall()
+        blocked_counts_rows = db.execute(
+            """SELECT listingId, source, COUNT(*) as c
+               FROM BlockedDate
+               WHERE source LIKE 'ical-sync:%'
+               GROUP BY listingId, source"""
+        ).fetchall()
+
+        blocked_counts = {
+            (row['listingId'], row['source']): row['c']
+            for row in blocked_counts_rows
+        }
+
+        syncs_by_listing = {}
+        for sync in sync_rows:
+            listing_id = sync['listingId']
+            ical_url = sync['icalUrl'] or ''
+            source_key = f"ical-sync:{hashlib.sha1(ical_url.encode('utf-8')).hexdigest()[:12]}"
+            synced_days = blocked_counts.get((listing_id, source_key), 0)
+
+            platform = (sync['platform'] or '').strip().lower()
+            if platform in ('', 'external', 'other'):
+                lower_url = ical_url.lower()
+                if 'airbnb' in lower_url:
+                    platform_label = 'airbnb'
+                elif 'booking' in lower_url:
+                    platform_label = 'booking'
+                elif 'abritel' in lower_url or 'vrbo' in lower_url or 'homeaway' in lower_url:
+                    platform_label = 'abritel'
+                else:
+                    platform_label = 'externe'
+            else:
+                platform_label = platform
+
+            events = _fetch_ical_cached(ical_url) if ical_url else []
+            live_days = 0
+            for start_d, end_d in events:
+                live_days += max(0, (end_d - start_d).days)
+
+            syncs_by_listing.setdefault(listing_id, []).append({
+                'id': sync['id'],
+                'platform': platform_label,
+                'icalUrl': ical_url,
+                'isActive': bool(sync['isActive']),
+                'lastSyncAt': sync['lastSyncAt'],
+                'eventsFound': len(events),
+                'daysBlockedLive': live_days,
+                'daysBlockedSynced': synced_days,
+            })
+
+        calendar_overview = []
+        for listing in listings:
+            listing_sources = syncs_by_listing.get(listing['id'], [])
+            calendar_overview.append({
+                'listingId': listing['id'],
+                'listingTitle': listing['title'],
+                'sources': listing_sources,
+                'totalSources': len(listing_sources),
+                'activeSources': sum(1 for s in listing_sources if s['isActive']),
+            })
+
         db.close()
         return jsonify({
             'stats': {
@@ -1099,6 +1167,7 @@ def admin_dashboard():
             },
             'occupancyRate': occupancy_rate,
             'recentBookings': [dict(r) for r in recent],
+            'calendarOverview': calendar_overview,
         })
     except Exception:
         return jsonify({
@@ -1108,7 +1177,9 @@ def admin_dashboard():
                 'pendingBookings': 0,
                 'revenue': 0,
             },
-            'occupancyRate': 0, 'recentBookings': [],
+            'occupancyRate': 0,
+            'recentBookings': [],
+            'calendarOverview': [],
         })
 
 

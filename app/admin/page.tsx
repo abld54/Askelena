@@ -24,6 +24,25 @@ interface RecentBooking {
   createdAt: string;
 }
 
+interface CalendarSourceSummary {
+  id: string;
+  platform: string;
+  icalUrl: string;
+  isActive: boolean;
+  lastSyncAt: string | null;
+  eventsFound: number;
+  daysBlockedLive: number;
+  daysBlockedSynced: number;
+}
+
+interface ListingCalendarSummary {
+  listingId: string;
+  listingTitle: string;
+  sources: CalendarSourceSummary[];
+  totalSources: number;
+  activeSources: number;
+}
+
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   confirmed: "bg-green-100 text-green-800",
@@ -48,6 +67,7 @@ export default function AdminDashboard() {
     revenue: 0,
   });
   const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
+  const [calendarOverview, setCalendarOverview] = useState<ListingCalendarSummary[]>([]);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -69,6 +89,7 @@ export default function AdminDashboard() {
         const data = await res.json();
         setStats(data.stats);
         setRecentBookings(data.recentBookings || []);
+        setCalendarOverview(data.calendarOverview || []);
       }
     } catch {
       // silently fail
@@ -202,6 +223,72 @@ export default function AdminDashboard() {
             </svg>
             Gerer les reservations
           </Link>
+        </div>
+
+        {/* iCal sync overview */}
+        <div className="bg-white rounded-2xl shadow-sm border border-[#0F2044]/5 overflow-hidden mb-10">
+          <div className="px-6 py-4 border-b border-[#0F2044]/5">
+            <h2
+              className="text-lg font-semibold text-[#0F2044]"
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+            >
+              Synchronisation iCal (source par source)
+            </h2>
+          </div>
+
+          {calendarOverview.length === 0 ? (
+            <div className="px-6 py-8 text-[#0F2044]/40">Aucun bien configure.</div>
+          ) : (
+            <div className="divide-y divide-[#0F2044]/5">
+              {calendarOverview.map((listing) => (
+                <div key={listing.listingId} className="px-6 py-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                      <div className="text-[#0F2044] font-semibold">{listing.listingTitle}</div>
+                      <div className="text-xs text-[#0F2044]/45">{listing.activeSources}/{listing.totalSources} sources actives</div>
+                    </div>
+                  </div>
+
+                  {listing.sources.length === 0 ? (
+                    <div className="text-sm text-[#0F2044]/40">Aucun calendrier iCal rattache a ce bien.</div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-[#0F2044]/5 text-[#0F2044]/50">
+                            <th className="text-left py-2 pr-4 font-medium">Source</th>
+                            <th className="text-left py-2 pr-4 font-medium">Etat</th>
+                            <th className="text-left py-2 pr-4 font-medium">Events</th>
+                            <th className="text-left py-2 pr-4 font-medium">Jours bloques (feed)</th>
+                            <th className="text-left py-2 pr-4 font-medium">Jours sync en base</th>
+                            <th className="text-left py-2 pr-0 font-medium">Dernier sync</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {listing.sources.map((source) => (
+                            <tr key={source.id} className="border-b border-[#0F2044]/5 last:border-0">
+                              <td className="py-2 pr-4 text-[#0F2044] font-medium capitalize">{source.platform}</td>
+                              <td className="py-2 pr-4">
+                                <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${source.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"}`}>
+                                  {source.isActive ? "active" : "inactive"}
+                                </span>
+                              </td>
+                              <td className="py-2 pr-4 text-[#0F2044]/70">{source.eventsFound}</td>
+                              <td className="py-2 pr-4 text-[#0F2044]/70">{source.daysBlockedLive}</td>
+                              <td className="py-2 pr-4 text-[#0F2044]/70">{source.daysBlockedSynced}</td>
+                              <td className="py-2 pr-0 text-[#0F2044]/70">
+                                {source.lastSyncAt ? new Date(source.lastSyncAt).toLocaleString("fr-FR") : "jamais"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Recent bookings */}
