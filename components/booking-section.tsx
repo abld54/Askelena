@@ -134,12 +134,37 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
 
+  // Guest info state
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const [specialRequests, setSpecialRequests] = useState("");
+  const [guestInfoPreFilled, setGuestInfoPreFilled] = useState(false);
+
   // Client-side fetched data
   const [listingId, setListingId] = useState<string>("");
   const [pricePerNight, setPricePerNight] = useState(DEFAULT_PRICE_PER_NIGHT);
   const [capacity, setCapacity] = useState(DEFAULT_CAPACITY);
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
   const [externalDates, setExternalDates] = useState<string[]>([]);
+
+  // Load guest info from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("askelena_guest");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.name) setGuestName(parsed.name);
+        if (parsed.email) setGuestEmail(parsed.email);
+        if (parsed.phone) setGuestPhone(parsed.phone);
+        if (parsed.name || parsed.email || parsed.phone) {
+          setGuestInfoPreFilled(true);
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
 
   const today = useMemo(() => startOfDay(new Date()), []);
   const nextMonth = addMonths(currentMonth, 1);
@@ -254,6 +279,15 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
       setError("Veuillez selectionner des dates.");
       return;
     }
+    if (!guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
+      setError("Veuillez remplir tous les champs obligatoires (nom, email, telephone).");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(guestEmail.trim())) {
+      setError("Veuillez entrer une adresse email valide.");
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
     setConfirmationMessage(null);
@@ -267,6 +301,10 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
           startDate: format(startDate, "yyyy-MM-dd"),
           endDate: format(endDate, "yyyy-MM-dd"),
           guests,
+          guestName: guestName.trim(),
+          guestEmail: guestEmail.trim(),
+          guestPhone: guestPhone.trim(),
+          specialRequests: specialRequests.trim(),
         }),
       });
 
@@ -281,6 +319,16 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
         setConfirmationMessage(
           data.message || "Demande de reservation recue. Nous vous contacterons sous 24h."
         );
+        // Save guest info to localStorage
+        try {
+          localStorage.setItem("askelena_guest", JSON.stringify({
+            name: guestName.trim(),
+            email: guestEmail.trim(),
+            phone: guestPhone.trim(),
+          }));
+        } catch {
+          // ignore storage errors
+        }
         // Reset selection
         setStartDate(null);
         setEndDate(null);
@@ -513,6 +561,73 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
                 </div>
               )}
 
+              {/* Guest info form */}
+              <div className="mb-6">
+                <h4
+                  className="text-sm font-semibold text-[#0F2044] mb-4 uppercase tracking-wider"
+                >
+                  Vos coordonnees
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-[#0F2044]/60 mb-1">
+                      Nom complet <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      placeholder="Jean Dupont"
+                      className="w-full px-4 py-2.5 border border-[#0F2044]/10 rounded-xl text-[#0F2044] text-sm placeholder:text-[#0F2044]/30 focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/30 focus:outline-none transition-colors bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#0F2044]/60 mb-1">
+                      Email <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      placeholder="jean@exemple.fr"
+                      className="w-full px-4 py-2.5 border border-[#0F2044]/10 rounded-xl text-[#0F2044] text-sm placeholder:text-[#0F2044]/30 focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/30 focus:outline-none transition-colors bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#0F2044]/60 mb-1">
+                      Telephone <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={guestPhone}
+                      onChange={(e) => setGuestPhone(e.target.value)}
+                      placeholder="+33 6 12 34 56 78"
+                      className="w-full px-4 py-2.5 border border-[#0F2044]/10 rounded-xl text-[#0F2044] text-sm placeholder:text-[#0F2044]/30 focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/30 focus:outline-none transition-colors bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#0F2044]/60 mb-1">
+                      Demandes speciales
+                    </label>
+                    <textarea
+                      value={specialRequests}
+                      onChange={(e) => setSpecialRequests(e.target.value)}
+                      placeholder="Arrivee tardive, lit bebe, etc."
+                      rows={2}
+                      className="w-full px-4 py-2.5 border border-[#0F2044]/10 rounded-xl text-[#0F2044] text-sm placeholder:text-[#0F2044]/30 focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/30 focus:outline-none transition-colors bg-white resize-none"
+                    />
+                  </div>
+                </div>
+                {guestInfoPreFilled && (
+                  <p className="mt-2 text-xs text-[#C9A84C] flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Vos informations sont sauvegardees pour vos prochaines visites
+                  </p>
+                )}
+              </div>
+
               {/* Confirmation message */}
               {confirmationMessage && (
                 <div className="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
@@ -534,7 +649,7 @@ export function BookingSection({ listingSlug }: { listingSlug?: string } = {}) {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={!startDate || !endDate || nights < 1 || isSubmitting}
+                disabled={!startDate || !endDate || nights < 1 || isSubmitting || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
                 className="w-full bg-[#C9A84C] hover:bg-[#E5C158] disabled:opacity-50 disabled:cursor-not-allowed text-[#0F2044] font-semibold py-4 rounded-xl text-lg transition-all duration-300 shadow-lg shadow-[#C9A84C]/20 hover:shadow-xl hover:shadow-[#C9A84C]/30"
               >
                 {isSubmitting ? "Reservation en cours..." : "Reserver"}

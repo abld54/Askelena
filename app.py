@@ -6,6 +6,10 @@ import secrets
 import hashlib
 import uuid
 import urllib.request
+import threading
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta, date
 from flask import Flask, send_from_directory, request, jsonify, redirect, session, url_for, Response
 from authlib.integrations.flask_client import OAuth
@@ -53,6 +57,7 @@ def init_db():
     for stmt in [
         'ALTER TABLE Listing ADD COLUMN airbnbUrl TEXT DEFAULT ""',
         'ALTER TABLE Booking ADD COLUMN guests INTEGER DEFAULT 1',
+        'ALTER TABLE User ADD COLUMN phone TEXT DEFAULT ""',
     ]:
         try:
             db.execute(stmt)
@@ -198,11 +203,11 @@ def get_listing():
 _ical_cache = {}  # {url: (timestamp, events)}
 _ICAL_CACHE_TTL = 300  # 5 minutes
 
-def _fetch_ical_cached(url):
+def _fetch_ical_cached(url, force_refresh=False):
     """Fetch and parse iCal URL with 5-minute cache."""
     import time
     now = time.time()
-    if url in _ical_cache:
+    if not force_refresh and url in _ical_cache:
         ts, events = _ical_cache[url]
         if now - ts < _ICAL_CACHE_TTL:
             return events
@@ -300,48 +305,270 @@ def get_reviews():
     except Exception:
         return jsonify([])
 
+# ─────────────────────────────────────────────
+# Email notifications
+# ─────────────────────────────────────────────
+def _build_guest_email_html(guest_name, booking_data, listing_data):
+    """Build branded HTML email for guest confirmation."""
+    return f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#FAF8F4;font-family:Georgia,serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F4;padding:40px 0;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(15,32,68,0.08);">
+<tr><td style="background:#0F2044;padding:32px 40px;text-align:center;">
+<h1 style="margin:0;color:#C9A84C;font-size:28px;font-family:Georgia,serif;">Askelena</h1>
+</td></tr>
+<tr><td style="padding:40px;">
+<h2 style="color:#0F2044;font-size:22px;margin:0 0 8px;">Merci, {guest_name} !</h2>
+<p style="color:#0F2044;opacity:0.6;font-size:15px;margin:0 0 24px;">Votre demande de reservation a bien ete enregistree.</p>
+<table width="100%" style="background:#FAF8F4;border-radius:12px;padding:24px;margin:0 0 24px;">
+<tr><td style="padding:8px 16px;color:#0F2044;opacity:0.5;font-size:13px;">Logement</td>
+<td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:14px;text-align:right;">{listing_data.get('title', 'Askelena')}</td></tr>
+<tr><td style="padding:8px 16px;color:#0F2044;opacity:0.5;font-size:13px;">Arrivee</td>
+<td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:14px;text-align:right;">{booking_data.get('startDate', '')}</td></tr>
+<tr><td style="padding:8px 16px;color:#0F2044;opacity:0.5;font-size:13px;">Depart</td>
+<td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:14px;text-align:right;">{booking_data.get('endDate', '')}</td></tr>
+<tr><td style="padding:8px 16px;color:#0F2044;opacity:0.5;font-size:13px;">Nuits</td>
+<td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:14px;text-align:right;">{booking_data.get('nights', 0)}</td></tr>
+<tr><td style="padding:8px 16px;color:#0F2044;opacity:0.5;font-size:13px;">Voyageurs</td>
+<td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:14px;text-align:right;">{booking_data.get('guests', 1)}</td></tr>
+<tr><td colspan="2" style="padding:0 16px;"><hr style="border:none;border-top:1px solid rgba(15,32,68,0.1);"></td></tr>
+<tr><td style="padding:8px 16px;color:#0F2044;font-weight:bold;font-size:15px;">Total</td>
+<td style="padding:8px 16px;color:#C9A84C;font-weight:bold;font-size:18px;text-align:right;">{booking_data.get('totalPrice', 0):.2f} EUR</td></tr>
+</table>
+<p style="color:#0F2044;opacity:0.6;font-size:14px;line-height:1.6;">Votre reservation est en attente de confirmation. Vous recevrez une reponse sous 24 heures.</p>
+</td></tr>
+<tr><td style="background:#0F2044;padding:20px 40px;text-align:center;">
+<p style="margin:0;color:#C9A84C;font-size:12px;opacity:0.7;">Askelena &mdash; Locations de vacances d'exception</p>
+</td></tr>
+</table>
+</td></tr></table>
+</body></html>'''
+
+
+def _build_admin_email_html(guest_name, guest_email, guest_phone, booking_data, listing_data):
+    """Build HTML email for admin notification."""
+    special = booking_data.get('specialRequests', '') or 'Aucune'
+    return f'''<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#FAF8F4;font-family:Georgia,serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F4;padding:40px 0;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(15,32,68,0.08);">
+<tr><td style="background:#0F2044;padding:24px 40px;text-align:center;">
+<h1 style="margin:0;color:#C9A84C;font-size:22px;font-family:Georgia,serif;">Nouvelle reservation</h1>
+</td></tr>
+<tr><td style="padding:32px 40px;">
+<h3 style="color:#0F2044;margin:0 0 16px;">Informations client</h3>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Nom :</strong> {guest_name}</p>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Email :</strong> {guest_email}</p>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Telephone :</strong> {guest_phone}</p>
+<hr style="border:none;border-top:1px solid rgba(15,32,68,0.1);margin:16px 0;">
+<h3 style="color:#0F2044;margin:0 0 16px;">Details reservation</h3>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Logement :</strong> {listing_data.get('title', 'Askelena')}</p>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Dates :</strong> {booking_data.get('startDate', '')} &rarr; {booking_data.get('endDate', '')}</p>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Nuits :</strong> {booking_data.get('nights', 0)}</p>
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Voyageurs :</strong> {booking_data.get('guests', 1)}</p>
+<p style="color:#C9A84C;font-size:16px;margin:16px 0;"><strong>Total : {booking_data.get('totalPrice', 0):.2f} EUR</strong></p>
+<hr style="border:none;border-top:1px solid rgba(15,32,68,0.1);margin:16px 0;">
+<p style="color:#0F2044;font-size:14px;margin:4px 0;"><strong>Demandes speciales :</strong> {special}</p>
+</td></tr>
+</table>
+</td></tr></table>
+</body></html>'''
+
+
+def send_booking_emails(guest_email, guest_name, guest_phone, booking_data, listing_data):
+    """Send booking confirmation emails (guest + admin). Run in a thread."""
+    smtp_host = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+    smtp_port = int(os.environ.get('SMTP_PORT', 587))
+    smtp_user = os.environ.get('SMTP_USER', '')
+    smtp_pass = os.environ.get('SMTP_PASS', '')
+    from_email = os.environ.get('SMTP_FROM', smtp_user)
+    admin_email = os.environ.get('ADMIN_EMAIL', 'anaelb90@gmail.com')
+
+    if not smtp_user or not smtp_pass:
+        print("[EMAIL] SMTP not configured, skipping emails")
+        return False
+
+    try:
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+
+        # 1) Guest confirmation
+        guest_msg = MIMEMultipart('alternative')
+        guest_msg['Subject'] = f"Askelena - Confirmation de votre demande de reservation"
+        guest_msg['From'] = from_email
+        guest_msg['To'] = guest_email
+        guest_html = _build_guest_email_html(guest_name, booking_data, listing_data)
+        guest_msg.attach(MIMEText(guest_html, 'html', 'utf-8'))
+        server.sendmail(from_email, guest_email, guest_msg.as_string())
+        print(f"[EMAIL] Guest confirmation sent to {guest_email}")
+
+        # 2) Admin notification
+        admin_msg = MIMEMultipart('alternative')
+        admin_msg['Subject'] = f"Nouvelle reservation - {guest_name} ({booking_data.get('startDate', '')})"
+        admin_msg['From'] = from_email
+        admin_msg['To'] = admin_email
+        admin_html = _build_admin_email_html(guest_name, guest_email, guest_phone, booking_data, listing_data)
+        admin_msg.attach(MIMEText(admin_html, 'html', 'utf-8'))
+        server.sendmail(from_email, admin_email, admin_msg.as_string())
+        print(f"[EMAIL] Admin notification sent to {admin_email}")
+
+        server.quit()
+        return True
+    except Exception as e:
+        print(f"[EMAIL] Error sending emails: {e}")
+        return False
+
+
 @app.route('/api/bookings', methods=['GET', 'POST'])
 def bookings_public():
     if request.method == 'POST':
         data = request.get_json()
         if not data:
             return jsonify({'error': 'Donnees requises'}), 400
+
+        guest_email = (data.get('guestEmail') or '').strip()
+        guest_name = (data.get('guestName') or '').strip()
+        guest_phone = (data.get('guestPhone') or '').strip()
+        special_requests = (data.get('specialRequests') or '').strip()
+
+        if not guest_email or not guest_name or not guest_phone:
+            return jsonify({'error': 'Nom, email et telephone sont requis.'}), 400
+
         try:
-            bid = secrets.token_urlsafe(16)
-            now = datetime.utcnow().isoformat()
             start = data.get('startDate', '')
             end = data.get('endDate', '')
+            listing_id = data.get('listingId', '')
+            num_guests = data.get('guests', 1)
+
             # Calculate nights
             try:
                 d1 = datetime.fromisoformat(start[:10])
                 d2 = datetime.fromisoformat(end[:10])
                 nights = (d2 - d1).days
             except Exception:
-                nights = 0
-            guest_email = data.get('guestEmail', '')
-            guest_name = data.get('guestName', '')
-            # Find or create guest user
+                return jsonify({'error': 'Dates invalides.'}), 400
+
+            if nights < 1:
+                return jsonify({'error': 'Le sejour doit etre d\'au moins 1 nuit.'}), 400
+
             db = get_db()
+
+            # Get listing for server-side price calculation
+            listing_row = db.execute('SELECT * FROM Listing WHERE id = ?', (listing_id,)).fetchone()
+            listing_data = dict(listing_row) if listing_row else {'title': 'Askelena', 'pricePerNight': 280}
+            price_per_night = listing_data.get('pricePerNight', 280)
+
+            # Server-side price calculation (don't trust client)
+            effective_rate = price_per_night
+            if nights >= 30:
+                effective_rate = 187
+            elif nights >= 7:
+                effective_rate = 240
+            subtotal = effective_rate * nights
+            service_fee = round(subtotal * 0.10, 2)
+            total_price = round(subtotal + service_fee, 2)
+
+            # ── Availability re-check ──
+            # 1) Check existing confirmed/pending bookings
+            existing_bookings = db.execute(
+                """SELECT startDate, endDate FROM Booking
+                WHERE listingId = ? AND status IN ('confirmed', 'pending')""",
+                (listing_id,)
+            ).fetchall()
+            req_start = date.fromisoformat(start[:10])
+            req_end = date.fromisoformat(end[:10])
+            for bk in existing_bookings:
+                bk_start = date.fromisoformat(bk['startDate'][:10])
+                bk_end = date.fromisoformat(bk['endDate'][:10])
+                if req_start < bk_end and req_end > bk_start:
+                    db.close()
+                    return jsonify({
+                        'error': 'Ces dates ne sont plus disponibles. Veuillez en choisir d\'autres.',
+                        'unavailable': True
+                    }), 409
+
+            # 2) Check BlockedDate entries
+            blocked_dates = db.execute(
+                'SELECT date FROM BlockedDate WHERE listingId = ?', (listing_id,)
+            ).fetchall()
+            blocked_set = set()
+            for bd in blocked_dates:
+                blocked_set.add(bd['date'][:10])
+            check_d = req_start
+            while check_d < req_end:
+                if check_d.strftime('%Y-%m-%d') in blocked_set:
+                    db.close()
+                    return jsonify({
+                        'error': 'Ces dates ne sont plus disponibles. Veuillez en choisir d\'autres.',
+                        'unavailable': True
+                    }), 409
+                check_d += timedelta(days=1)
+
+            # 3) Check iCal calendar syncs (force fresh fetch)
+            syncs = db.execute(
+                "SELECT icalUrl FROM CalendarSync WHERE listingId = ? AND isActive = 1",
+                (listing_id,)
+            ).fetchall()
+            for sync in syncs:
+                events = _fetch_ical_cached(sync['icalUrl'], force_refresh=True)
+                for ev_start, ev_end in events:
+                    if req_start < ev_end and req_end > ev_start:
+                        db.close()
+                        return jsonify({
+                            'error': 'Ces dates ne sont plus disponibles. Veuillez en choisir d\'autres.',
+                            'unavailable': True
+                        }), 409
+
+            # ── Create or update User ──
+            now = datetime.utcnow().isoformat()
             user = db.execute('SELECT id FROM User WHERE email = ?', (guest_email,)).fetchone()
             if user:
                 guest_id = user['id']
+                db.execute(
+                    'UPDATE User SET name = ?, phone = ?, updatedAt = ? WHERE id = ?',
+                    (guest_name, guest_phone, now, guest_id)
+                )
             else:
                 guest_id = secrets.token_urlsafe(16)
                 db.execute(
-                    'INSERT INTO User (id, email, name, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
-                    (guest_id, guest_email, guest_name, 'guest', now, now)
+                    'INSERT INTO User (id, email, name, phone, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    (guest_id, guest_email, guest_name, guest_phone, 'guest', now, now)
                 )
+
+            # ── Create Booking ──
+            bid = secrets.token_urlsafe(16)
             db.execute(
                 '''INSERT INTO Booking (id, listingId, guestId, startDate, endDate, nights, totalPrice, status, guestEmail, guestName, guests, createdAt, updatedAt)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                (bid, data.get('listingId', ''), guest_id, start, end, nights,
-                 data.get('totalPrice', 0), 'pending', guest_email, guest_name,
-                 data.get('guests', 1), now, now)
+                (bid, listing_id, guest_id, start, end, nights,
+                 total_price, 'pending', guest_email, guest_name,
+                 num_guests, now, now)
             )
             db.commit()
-            booking = dict(db.execute('SELECT * FROM Booking WHERE id = ?', (bid,)).fetchone())
             db.close()
-            return jsonify(booking), 201
+
+            # ── Send emails in background thread ──
+            booking_email_data = {
+                'startDate': start, 'endDate': end, 'nights': nights,
+                'guests': num_guests, 'totalPrice': total_price,
+                'specialRequests': special_requests, 'bookingId': bid,
+            }
+            threading.Thread(
+                target=send_booking_emails,
+                args=(guest_email, guest_name, guest_phone, booking_email_data, listing_data),
+                daemon=True
+            ).start()
+
+            return jsonify({
+                'success': True,
+                'message': 'Demande de reservation enregistree ! Vous recevrez une confirmation par email sous 24h.',
+                'bookingId': bid,
+            }), 201
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
