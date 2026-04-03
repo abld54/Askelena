@@ -64,22 +64,24 @@ const amenityIcons: Record<string, React.ReactNode> = {
 };
 
 const amenities = [
-  "WiFi haut debit",
-  "Cuisine equipee",
-  "Balcon",
-  "Chauffage",
-  "Lave-linge",
-  "Lit queen-size",
-  "Machine a cafe Nespresso",
-  "Parking",
-  "TV 4K",
-  "Fer a repasser",
+  "Cuisine entiere",
+  "Bouilloire electrique",
+  "Machine a cafe",
+  "Cafe",
+  "Four",
+  "Four a micro-ondes",
+  "Grille-pain",
+  "Refrigerateur",
+  "Plaques de cuisson",
+  "Vaisselle et couverts",
+  "Verres a vin",
+  "Equipements de cuisine de base",
 ];
 
 const galleryItems = [
-  { label: "Salon", gradient: "from-[#0F2044] to-[#1B3A6B]" },
-  { label: "Chambre principale", gradient: "from-[#1B3A6B] to-[#0F2044]" },
-  { label: "Chambre 2", gradient: "from-[#0F2044] to-[#2a5a3a]" },
+  { label: "Cuisine complete", image: "/appartement-cuisine-1.jpg", gradient: "from-[#0F2044] to-[#1B3A6B]" },
+  { label: "Plan de travail", image: "/appartement-cuisine-2.jpg", gradient: "from-[#1B3A6B] to-[#0F2044]" },
+  { label: "Espace cuisine", image: "/appartement-cuisine-3.jpg", gradient: "from-[#0F2044] to-[#2a5a3a]" },
   { label: "Cuisine", gradient: "from-[#2a5a3a] to-[#1B3A6B]" },
   { label: "Salle de bain", gradient: "from-[#1B3A6B] to-[#2a5a3a]" },
   { label: "Balcon", gradient: "from-[#0F2044] to-[#C9A84C]/30" },
@@ -180,7 +182,16 @@ export default function AppartementPage() {
                 }`}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient}`} />
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.label}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
                 <div className="absolute inset-0 flex items-end p-4 md:p-6">
                   <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10">
                     <span className="text-white text-sm font-medium">{item.label}</span>
