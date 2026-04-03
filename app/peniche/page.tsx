@@ -288,7 +288,7 @@ export default function PenichePage() {
       </section>
 
       {/* Booking */}
-      <BookingSection />
+      <BookingSection listingSlug="listing-peniche-001" />
 
       {/* Location */}
       <section className="bg-[#FAF8F4] py-24 md:py-32">
