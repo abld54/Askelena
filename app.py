@@ -793,22 +793,31 @@ def admin_dashboard():
         total_available = days_in_month * max(listing_count, 1)
         occupancy_rate = round((booked_days / total_available) * 100, 1) if total_available > 0 else 0
         recent = db.execute(
-            '''SELECT b.*, u.name as guestUserName
+            '''SELECT b.*, u.name as guestUserName, l.title as listingTitle
             FROM Booking b LEFT JOIN User u ON b.guestId = u.id
+            LEFT JOIN Listing l ON b.listingId = l.id
             ORDER BY b.createdAt DESC LIMIT 5'''
         ).fetchall()
         db.close()
         return jsonify({
-            'totalBookings': total_bookings,
-            'totalRevenue': total_revenue,
+            'stats': {
+                'totalListings': listing_count,
+                'totalBookings': total_bookings,
+                'pendingBookings': pending_bookings,
+                'revenue': total_revenue,
+            },
             'occupancyRate': occupancy_rate,
-            'pendingBookings': pending_bookings,
             'recentBookings': [dict(r) for r in recent],
         })
     except Exception:
         return jsonify({
-            'totalBookings': 0, 'totalRevenue': 0, 'occupancyRate': 0,
-            'pendingBookings': 0, 'recentBookings': [],
+            'stats': {
+                'totalListings': 0,
+                'totalBookings': 0,
+                'pendingBookings': 0,
+                'revenue': 0,
+            },
+            'occupancyRate': 0, 'recentBookings': [],
         })
 
 
