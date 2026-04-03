@@ -179,8 +179,8 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/40 text-xs">
-            &copy; 2026 Askelena. Tous droits reserves.
+          <p className="text-white/40 text-xs text-center sm:text-left">
+            &copy; 2026 Askelena. Built by supersocks.co. All rights reserved. Powered by IA for the best experience, but Gilles is real to welcome you when he&apos;s around.
           </p>
           <div className="flex items-center gap-6">
             <Link
