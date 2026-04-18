@@ -60,7 +60,7 @@ export async function Listings() {
     return (
       <section className="bg-white py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center py-16 text-gray-400">
-          <p className="text-lg">Aucune annonce disponible pour l'instant.</p>
+          <p className="text-lg">Aucune annonce disponible pour l’instant.</p>
           <Link
             href="/host/listings/new"
             className="mt-4 inline-block text-[#C9A84C] underline underline-offset-4 text-sm"

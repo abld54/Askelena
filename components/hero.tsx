@@ -11,7 +11,7 @@ export function Hero() {
   const [search, setSearch] = useState("");
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
       <div
         className="absolute inset-0 z-0"
@@ -22,6 +22,7 @@ export function Hero() {
       />
 
       {/* Decorative overlay pattern */}
+      <div className="hero-grain" aria-hidden="true" />
       <div
         className="absolute inset-0 z-0 opacity-10"
         style={{
@@ -53,13 +54,13 @@ export function Hero() {
           <Badge
             className="bg-[#C9A84C]/20 text-[#C9A84C] border border-[#C9A84C]/40 text-xs px-4 py-1.5 font-medium tracking-widest uppercase"
           >
-            Lieux d'exception
+            Lieux d’exception
           </Badge>
         </div>
 
         {/* Heading */}
         <h1
-          className="text-5xl sm:text-6xl md:text-7xl font-heading font-semibold text-white leading-tight mb-6"
+          className="balanced-heading text-5xl sm:text-6xl md:text-7xl font-heading font-semibold text-white leading-tight mb-6"
           style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
         >
           Vivez une
@@ -70,7 +71,7 @@ export function Hero() {
         <p className="text-white/70 text-lg sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
           Péniches flottantes, châteaux historiques, phares isolés, cabanes
           perchées ou yourtes en pleine nature — trouvez votre refuge
-          d'exception.
+          d’exception.
         </p>
 
         {/* Search bar */}
@@ -125,7 +126,7 @@ export function Hero() {
             />
           </div>
 
-          <Button className="bg-[#0F2044] hover:bg-[#1B3A6B] text-white font-semibold px-8 h-12 rounded-xl text-sm transition-colors duration-200">
+          <Button className="press-feedback bg-[#0F2044] hover:bg-[#1B3A6B] text-white font-semibold px-8 h-12 rounded-xl text-sm transition-colors duration-200">
             Rechercher
           </Button>
         </div>

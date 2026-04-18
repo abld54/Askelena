@@ -164,7 +164,7 @@ export function ListingForm({ initialData, mode }: Props) {
         <h2 className="text-base font-semibold text-[#0F2044]">Informations générales</h2>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700">Titre de l'annonce *</label>
+          <label className="text-sm font-medium text-gray-700">Titre de l’annonce *</label>
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -300,7 +300,7 @@ export function ListingForm({ initialData, mode }: Props) {
       {/* Photos */}
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-[#0F2044]">Photos</h2>
-        <p className="text-sm text-gray-500">Ajoutez des URLs d'images pour illustrer votre annonce.</p>
+        <p className="text-sm text-gray-500">Ajoutez des URLs d’images pour illustrer votre annonce.</p>
 
         <div className="flex gap-2">
           <Input

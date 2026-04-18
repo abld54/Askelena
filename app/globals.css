@@ -101,6 +101,29 @@
     @apply font-sans;
     scroll-behavior: smooth;
   }
+
+  :focus-visible {
+    outline: 2px solid #C9A84C;
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -48px;
+    left: 16px;
+    z-index: 999;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #0F2044;
+    color: #FAF8F4;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: top 180ms ease;
+  }
+
+  .skip-link:focus-visible {
+    top: 16px;
+  }
 }
 
 @layer utilities {
@@ -139,5 +162,27 @@
   }
   .to-navy-light {
     --tw-gradient-to: #1B3A6B;
+  }
+
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+    background-image: radial-gradient(rgba(255,255,255,0.25) 0.5px, transparent 0.5px);
+    background-size: 3px 3px;
+    mix-blend-mode: soft-light;
+  }
+
+  .balanced-heading {
+    text-wrap: balance;
+  }
+
+  .press-feedback {
+    transition: transform 180ms ease, box-shadow 220ms ease, background-color 220ms ease;
+  }
+
+  .press-feedback:active {
+    transform: translateY(1px) scale(0.985);
   }
 }

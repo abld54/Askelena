@@ -50,14 +50,14 @@ export default function LouezNousVosBiensPage() {
               <div className="space-y-4 text-[#0F2044]/70 leading-relaxed">
                 <p>
                   Nous offrons aux proprietaires une source de revenus additionnels en louant
-                  leur residence ou un bien qu'ils n'occupent pas toute l'annee.
+                  leur residence ou un bien qu’ils n’occupent pas toute l’annee.
                 </p>
                 <p>
-                  Askelena associe le mode de vie a la francaise avec l'excellence du service
+                  Askelena associe le mode de vie a la francaise avec l’excellence du service
                   inspiree de la culture philippine, pour une experience 5 etoiles.
                 </p>
                 <p>
-                  Notre approche privilegie la qualite plutot que la quantite, afin d'assurer
+                  Notre approche privilegie la qualite plutot que la quantite, afin d’assurer
                   un service personnalise pour une clientele exigeante.
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function LouezNousVosBiensPage() {
                 href="/"
                 className="inline-block border border-[#0F2044]/20 hover:border-[#0F2044]/40 text-[#0F2044] font-semibold px-8 py-3 rounded-xl transition-colors duration-300"
               >
-                Retour a l'accueil
+                Retour a l’accueil
               </Link>
             </div>
           </div>

@@ -315,19 +315,20 @@ export default function Home() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
         <img
           src="/peniche-sunset.jpg"
           alt="Vue de la péniche au coucher du soleil"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-[#0F2044]/68" />
+        <div className="hero-grain" aria-hidden="true" />
         <div className="absolute top-1/4 -right-32 w-96 h-96 bg-[#C9A84C]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 -left-32 w-80 h-80 bg-[#C9A84C]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1
-            className="text-6xl sm:text-8xl md:text-9xl font-semibold text-white mb-6 tracking-tight"
+            className="balanced-heading text-6xl sm:text-8xl md:text-9xl font-semibold text-white mb-6 tracking-tight"
             style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             Askelena
@@ -343,7 +344,7 @@ export default function Home() {
           </p>
           <a
             href="#properties"
-            className="inline-block bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold px-10 py-4 rounded-xl text-lg transition-all duration-300 shadow-lg shadow-[#C9A84C]/20 hover:shadow-xl hover:shadow-[#C9A84C]/30"
+            className="press-feedback inline-block bg-[#C9A84C] hover:bg-[#E5C158] text-[#0F2044] font-semibold px-10 py-4 rounded-xl text-lg transition-all duration-300 shadow-lg shadow-[#C9A84C]/20 hover:shadow-xl hover:shadow-[#C9A84C]/30 focus-visible:outline-offset-4"
           >
             Decouvrir nos biens
           </a>
@@ -369,7 +370,7 @@ export default function Home() {
             </h2>
             <p className="text-[#0F2044]/65 text-base md:text-lg leading-relaxed max-w-4xl mx-auto">
               Nous aidons les proprietaires a augmenter les revenus de leur residence principale ou secondaire,
-              sans perdre en flexibilite. Askelena associe l'art de vivre a la francaise a l'excellence de service
+              sans perdre en flexibilite. Askelena associe l’art de vivre a la francaise a l’excellence de service
               inspiree de la culture philippine, avec une approche axee sur la qualite plutot que la quantite.
             </p>
           </div>
@@ -567,8 +568,8 @@ export default function Home() {
             Vous avez un bien a louer ?
           </h2>
           <p className="text-[#0F2044]/65 text-base md:text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
-            Confiez-nous votre bien et beneficiez d'une gestion premium, d'un plan de valorisation
-            et d'un cadre contractuel clair, adapte a votre rythme.
+            Confiez-nous votre bien et beneficiez d’une gestion premium, d’un plan de valorisation
+            et d’un cadre contractuel clair, adapte a votre rythme.
           </p>
           <Link
             href="/louez-nous-vos-biens"

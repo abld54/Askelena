@@ -36,7 +36,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SessionProvider>{children}</SessionProvider>
+        <a href="#main-content" className="skip-link">Aller au contenu</a>
+        <SessionProvider>
+          <div id="main-content" className="flex-1">{children}</div>
+        </SessionProvider>
       </body>
     </html>
   );
